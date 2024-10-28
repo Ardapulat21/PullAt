@@ -1,0 +1,32 @@
+@model PullAt.Models.User
+@{
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="centeredContainer">
+        <h4>Login</h4>
+        <hr />
+        <form action="/User/Login" method="post">
+            <div class="input">
+                <label for="username">Username </label>
+                <input asp-for="Username" type="text" id="username" name="Username" required>
+            </div>
+            <div class="input">
+                <label for="password">Password </label>
+                <input asp-for="Password" type="Password" id="Password" name="Password" style="margin-left:3px" required>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="showPassword" />
+                <label for="showPassword">Show Password</label>
+            </div>
+            <div>
+                @Html.ValidationSummary(true, "", new { @style = "margin-left:55px;text-align:left;color:red"})
+            </div>
+            <div style="margin-top:10px;margin-left:40px">
+                <input type="submit" value="Login" class="btn btn-outline-primary" style="width:120px" />
+            </div>
+        </form>
+    </div>
+}

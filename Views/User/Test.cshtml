@@ -1,0 +1,12 @@
+@{
+}
+<div class="centeredContainer">
+    @using (Html.BeginForm("Upload", "File", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="input">
+            <label for="file" style="padding-bottom:20px;" >Choose file to upload:</label>
+            <input type="file" name="file" id="file" style="padding-left:100px;padding-bottom:20px;"/>
+        </div>
+        <input type="submit" value="Upload" class="btn btn-outline-primary" style="width:120px"/>
+    }
+</div>

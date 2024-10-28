@@ -1,0 +1,40 @@
+@model IEnumerable<FileInfo>
+
+@{
+}
+<div class="centeredContainer" style="overflow: auto;height:700px">
+    @using (Html.BeginForm("Upload", "File", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div style="display: flex;justify-content: space-between;">
+            <input type="file" style="margin:auto" name="file" accept=".jpg,.png"id="file" />
+            <input type="submit" class="btn btn-outline-primary" value="Upload"/>
+        </div>
+    }
+    <hr/>
+    <div class="file-grid">
+        @foreach (var file in Model)
+        {
+            <div class="file-item">
+                <img src="@file.FilePath"/>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .file-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 columns */
+        gap: 10px; /* Space between grid items */
+        padding: 10px;
+    }
+    .file-item {
+        text-align: center;
+        border: 1px solid #ccc; /* Optional: border around each item */
+        padding: 10px; /* Optional: padding inside each item */
+    }
+    .file-item img {
+        max-width: 100%; /* Responsive image */
+        height: auto; /* Maintain aspect ratio */
+    }
+</style>
