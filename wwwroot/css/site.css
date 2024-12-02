@@ -7,51 +7,39 @@ html {
     font-size: 16px;
   }
 }
-
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
-
 body {
     margin:0;
-    background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg');
-    background-size: cover;
-    transition: filter 0.3s ease;
+    background-image: url('../src/Flemingo.jpg');
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-position: center; 
+    background-attachment: fixed;
+    height: 100vh;
 }
-
-.cell {
-    display: table-cell;
-    padding: 4px 10px 4px 10px;
-    transition: background-color 0.3s ease;
-}
-
-.cell:hover {
-    background-color: rgba(249, 249, 249, 0.8);
-}
-
-.row {
-    display: table-row;
-    flex-direction: row;
-}
-
 a {
     text-decoration: none;
-    color: #ffffff;
+    color: black;
 }
 
-.centeredContainer {
-    position: absolute;
+.outerClass{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  margin-top: -50px;
+}
+.centerContainer{
     width: 500px;
-    top: 50%;
-    left: 50%;
-    margin: -250px 0 0 -165px;
-    text-align:center;
-    padding:50px;
-    overflow: auto;
     background-color: rgba(249, 249, 249, 0.6);
+    overflow: auto;
     transition: background-color 0.3s ease;
+    padding:50px;
+    text-align:center;
 }
-
 .bottom-div {
     position: fixed; /* Fixed positioning */
     bottom: 0; /* Position at the bottom */
@@ -59,36 +47,37 @@ a {
     width: 100%; /* Full width */
     padding: 10px; /* Padding */
 }
-
-.centeredContainer:hover {
+.centerContainer:hover {
     background-color: rgba(249, 249, 249, 0.8);
 }
-
-.navbar{
+.header{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(249, 249, 249, 0.8);
-  width: 100%;
+  background-color: rgba(249, 249, 249, 0.6);
   padding:0;
 }
-.navbar .right,
-.navbar .left{
-  display: flex;
-  padding:0;
-}
-
-.right {
-  margin-left: auto;
-  padding:0;
-}
-
 .input{
   display: inline-block;
   margin-top: 10px;
   padding-left: 10px;
 }
-
 .checkbox{
-  margin-top:10px;text-align:left;margin-left:72px
+  margin-top:10px;
+  text-align:left;
+  margin-left:72px
 }
+
+.authButtons {
+  display: flex;
+  flex-direction: row;
+}
+.authButtons > div {
+transition: background-color 0.3s ease;
+margin-left: 10px;
+padding: 4px 10px 4px 10px;
+}
+.authButtons > div:hover {
+  background-color: rgba(249, 249, 249, 0.8);
+}
+

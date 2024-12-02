@@ -6,33 +6,41 @@
     <title>@ViewData["Title"] - PullAt</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/files.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PullAt.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <div class="navbar">
-        <div class="left">
-            <div class="cell" onclick="navigateToHome()">
-                <img src="/Uploads/Image.png" style="width:80px" />
-            </div>
+    <div class="header">
+        <div onclick="navigateToHome()">
+            <img src="/Uploads/Image.png" style="width:80px" />
         </div>
-        <div class="right">
-            <div class="cell" onclick="document.getElementById('Register').click()">
-                <a id="Register" href="@Url.Action("Register","User")" style="color:white">Register</a>
+       @if (!User.Identity.IsAuthenticated)
+        {
+            <div class="authButtons">
+                <div class="registerButton" onclick="document.getElementById('Register').click()">
+                    <a id="Register" href="@Url.Action("Register","User")" style="color:white">Register</a>
+                </div>
+                <div class="loginButton" onclick="document.getElementById('Login').click()">
+                    <a id="Login" href="@Url.Action("Login","User")" style="color:white">Login</a>
+                </div>
             </div>
-            <div class="cell" onclick="document.getElementById('Login').click()">
-                <a id="Login" href="@Url.Action("Login","User")" style="color:white">Login</a>
+        }
+        else
+        {
+            <div class="authButtons">
+                <div class="loginButton" onclick="document.getElementById('Logout').click()">
+                    <a id="Logout" href="@Url.Action("Logout","User")" style="color:white">Logout</a>
+                </div>
             </div>
-        </div>
+        }
     </div>
-    <div >
+    <div>
         @RenderBody()
-    </div>
-    <div class="bottom-div">
-        <p style="color:white;">&copy; 2024 - PullAt - <a style="color:white;" asp-area=" " asp-controller="Home" asp-action="Privacy">Privacy</a></p>
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/files.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

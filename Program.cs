@@ -1,19 +1,28 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PullAt.Data;
 using PullAt.Interfaces;
 using PullAt.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie(options =>
 {
-    options.UseMySql(connectionString,ServerVersion.AutoDetect(connectionString));
-}
-);
+    options.LoginPath = "/User/Login";
+});
+builder.Services.AddAuthorization();
+builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.Cookie.HttpOnly = true; 
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
+        options.Cookie.SameSite = SameSiteMode.Strict; 
+        options.LoginPath = "/User/Login"; 
+    });
+
 builder.Services.AddSingleton<IUserService, UserService>();
 var app = builder.Build();
 
@@ -34,6 +43,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=User}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

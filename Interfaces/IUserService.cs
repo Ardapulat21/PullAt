@@ -9,6 +9,6 @@ namespace PullAt.Interfaces
         public Task<bool> Add(User credentials);
         public Task Delete(int id);
         public Task Edit(User credentials,int id);
-        public Task<bool?> Validate(User credentials);
+        public Task<string?> Login(User credentials);
     }
 }

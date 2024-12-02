@@ -1,54 +1,55 @@
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using FileInfo = PullAt.Models.FileInfo;
 namespace PullAt.Controllers{
     public class FileController : Controller
     {
-        string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","uploads");
+        HttpClient _httpClient;
+        private readonly string? _folderPath;
+        private readonly string? apiUrl;
+        public FileController(HttpClient httpClient,IConfiguration configuration)
+        {
+            _httpClient = httpClient;
+            _folderPath = configuration["ResourceFolder"];
+            apiUrl = Path.Combine(configuration["ApiSettings:APIUrl"],"File");
+        }
         public ActionResult Upload(){
             return View();
         }
-        [HttpPost]
-        public async Task<ActionResult> Upload(IFormFile file)
+        [Authorize]
+        public async Task<ActionResult> Files()
         {
-            if (file != null && file.Length > 0)
-            {
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
+            // var url = Path.Combine(apiUrl,"Fetch");
+            
+            // var response = await _httpClient.GetAsync(url);
+            // if (response.IsSuccessStatusCode)
+            // {   
+            //     var data = await response.Content.ReadAsStringAsync();
+            //     var files = JsonConvert.DeserializeObject<List<FileInfo>>(data);
+            //     return View(files);
+            // }
+            return View(new List<FileInfo>());
 
-                var filePath = Path.Combine(folderPath, file.FileName);
+            // string filename;
+            // var files = new List<FileInfo>();
+            // if (Directory.Exists(_folderPath))
+            // {
+            //     var fileEntries = Directory.GetFiles(_folderPath);
+            //     foreach (var filePath in fileEntries)
+            //     {
+            //         filename = Path.GetFileName(filePath);
+            //         if(Path.GetExtension(filePath)!= ".jpg")
+            //             continue;   
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-                ViewBag.Message = "File uploaded successfully!";
-            }
-            else
-            {
-                ViewBag.Message = "Please select a file to upload.";
-            }
-            return RedirectToAction("Files");
-        }
-
-        public IActionResult Files()
-        {
-            var files = new List<FileInfo>();
-            string filename;
-            if (Directory.Exists(folderPath))
-            {
-                var fileEntries = Directory.GetFiles(folderPath);
-                foreach (var filePath in fileEntries)
-                {
-                    filename = Path.GetFileName(filePath);
-                    files.Add(new FileInfo
-                    {
-                        Filename = filename,
-                        FilePath = "/uploads/"+filename // URL for accessing the file
-                    });
-                }
-            }
-
-            return View(files);
+            //         files.Add(new FileInfo
+            //         {
+            //             Filename = filename,
+            //             FilePath = "/uploads/"+filename // URL for accessing the file
+            //         });
+            //     }
+            // }
+            // return View(files);
         }
     }
 }

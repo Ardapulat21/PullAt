@@ -4,36 +4,38 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    <div class="centeredContainer">
-        <h4>Register</h4>
-        <hr />
-        <form action="/User/Register" method="post">
-            <div class="input">
-                <label for="username">Username </label>
-                <input asp-for="Username" type="text" id="username" name="Username" required>
-            </div>
-            <div class="input">
-                <label for="password">Password </label>
-                <input asp-for="Password" type="Password" id="Password" name="Password" style="margin-left:3px" required>
-            </div>
-            <div class="input">
-                <label for="email">Email </label>
-                <input asp-for="Email" type="email" id="email" name="Email" style="margin-left:33px" required>
-            </div>
-            <div class="checkbox">
-                <input type="checkbox" id="showPassword" />
-                <label for="showPassword">Show Password</label>
-            </div>
-            <div class="checkbox">
-                <input type="checkbox" id="Agreement" name="Agreement" required/>
-                <label for="Agreement">I read <a id="Agreement" asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #56564d;">Agreement</a></label>
-            </div>
-            <div>
-                @Html.ValidationSummary(true, "", new { @style = "margin-left:55px;text-align:left;color:red"})
-            </div>
-            <div style="margin-top:10px;margin-left:40px">
-                <input type="submit" value="Register" class="btn btn-outline-primary" style="width:120px" />
-            </div>
-        </form>
+    <div class="outerClass">
+        <div class="centerContainer">
+            <h4>Register</h4>
+            <hr />
+            <form action="/User/Register" method="post">
+                <div class="input">
+                    <label for="username">Username </label>
+                    <input asp-for="Username" type="text" id="username" name="Username" required>
+                </div>
+                <div class="input">
+                    <label for="password">Password </label>
+                    <input asp-for="Password" type="Password" id="Password" name="Password" style="margin-left:3px" required>
+                </div>
+                <div class="input">
+                    <label for="email">Email </label>
+                    <input asp-for="Email" type="email" id="email" name="Email" style="margin-left:33px" required>
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="showPassword" />
+                    <label for="showPassword">Show Password</label>
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="Agreement" name="Agreement" required/>
+                    <label for="Agreement">I read <a id="Agreement" asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #56564d;">Agreement</a></label>
+                </div>
+                <div>
+                    @Html.ValidationSummary(true, "", new { @style = "margin-left:55px;text-align:left;color:red"})
+                </div>
+                <div style="margin-top:10px;margin-left:40px">
+                    <input type="submit" value="Register" class="btn btn-outline-primary" style="width:120px" />
+                </div>
+            </form>
+        </div>
     </div>
 }

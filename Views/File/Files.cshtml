@@ -1,40 +1,125 @@
 @model IEnumerable<FileInfo>
 
 @{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 }
-<div class="centeredContainer" style="overflow: auto;height:700px">
-    @using (Html.BeginForm("Upload", "File", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        <div style="display: flex;justify-content: space-between;">
-            <input type="file" style="margin:auto" name="file" accept=".jpg,.png"id="file" />
-            <input type="submit" class="btn btn-outline-primary" value="Upload"/>
-        </div>
-    }
-    <hr/>
-    <div class="file-grid">
-        @foreach (var file in Model)
-        {
-            <div class="file-item">
-                <img src="@file.FilePath"/>
-            </div>
-        }
+<div class="expandableMenu">
+    <div id="expandableButton">
+        <i id="icon" class="bi bi-caret-down"></i>
+    </div>
+    <div class="expandableItems">
+        <label for="fileInput" class="content">Upload</label>
+        <input type="file" id="fileInput" hidden/>
+        <div id="deleteButton" class="content">Delete</div>
     </div>
 </div>
 
+<div class="outerClass " style="margin:0 auto;">
+        <div class="centerContainer">
+            <p id="status"></p>
+            <div class="file-grid">
+                <img src="@Url.Content("/Assets/Arda Pulat.jpg")"/>
+                @foreach (var file in Model)
+                {
+                    <div class="file-item">
+                        <img src="@file.FilePath"/>
+                    </div>
+                }
+        </div>
+    </div>
+</div>  
 <style>
-    .file-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 3 columns */
-        gap: 10px; /* Space between grid items */
-        padding: 10px;
+    .expandableMenu{
+        position: absolute;
+        left: 20px;
+        top: 50px;
     }
-    .file-item {
-        text-align: center;
-        border: 1px solid #ccc; /* Optional: border around each item */
-        padding: 10px; /* Optional: padding inside each item */
+    .content{
+        background-color: rgb(171, 215, 247);
+        width: 100px;
+        max-height: 0px;
+        overflow: hidden;
+        transition:max-height 0.7s ease-out;
     }
-    .file-item img {
-        max-width: 100%; /* Responsive image */
-        height: auto; /* Maintain aspect ratio */
+    #expandableButton:hover, .content:hover{
+        opacity: 0.7;
+    }
+    #expandableButton{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        background-color: rgb(171, 215, 247);
+        width: 50px;
+        height: 50px;
+        border-radius: 30px;
+        transition: border-radius 0.7s;
+        border:1px solid black;
+        cursor:pointer;
+    }
+    .expandableItems{
+        display: flex;
+        border-width: 1px;
+        flex-direction: column;
     }
 </style>
+
+<script>
+    var button = document.getElementById("expandableButton");
+    var contents = document.getElementsByClassName("content");
+    var icon = document.getElementById("icon");
+    button.addEventListener("click",function(){
+        if(icon.classList.contains("bi-caret-down")){
+            icon.classList.remove("bi-caret-down");
+            icon.classList.add("bi-caret-up");
+        }
+        else{
+            icon.classList.remove("bi-caret-up");
+            icon.classList.add("bi-caret-down");
+        }
+        for(var i = 0;i < contents.length; i++){
+            var content = contents[i];
+            if(content.style.maxHeight){
+                content.style.maxHeight = null;
+                expandableButton.style.borderRadius = "30px";
+                content.style.padding = "0px 15px";
+            }
+            else{
+                expandableButton.style.borderRadius = "0px";
+                content.style.padding = "5px 15px";
+                content.style.maxHeight = content.scrollHeight + "px";
+                content.style.borderWidth = "1px";
+            }
+        }
+    });
+    var deleteButton = document.getElementById("deleteButton");
+    deleteButton.addEventListener("click",function(){
+        alert("Delete button was clicked");
+    });
+    
+    document.getElementById('fileInput').addEventListener('change', async (event) => {
+        const file = event.target.files[0]; // Get the selected file
+        if (!file) {
+            document.getElementById('status').innerText = "No files selected";
+            return;
+        }
+        const formData = new FormData();
+        formData.append('file', file); // Append the file to FormData
+        try {
+            const response = await fetch('http://localhost:5151/api/file/upload', { // Change to your endpoint
+                method: 'POST',
+                body: formData,
+            });
+            if (response.ok) {
+                const result = await response.json(); // Assuming the server responds with JSON
+                document.getElementById('status').innerText = 'File uploaded successfully: ' + result.fileName;
+            } else {
+                throw new Error('Upload failed: ' + response.statusText);
+            }
+        } catch (error) {
+            document.getElementById('status').innerText = 'Error: ' + error.message;
+        }
+    });
+
+</script>

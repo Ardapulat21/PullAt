@@ -1,10 +1,10 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using PullAt.Data;
 using PullAt.Interfaces;
 using PullAt.Models;
-using PullAt.Services;
-
+using System.Net.Http.Headers;
+using System.Security.Claims;
 namespace PullAt.Controllers{
     public class UserController : Controller 
     {
@@ -17,13 +17,16 @@ namespace PullAt.Controllers{
         }
         public async Task<IActionResult> Edit(int id)
         {
-            // var user = await _userService.GetById(id);
-            // return View(user);
             return View();
         }
+        [Authorize]
         public async Task<IActionResult> UserList()
         {
+            ViewBag.Message = User.Identity.IsAuthenticated ? "Authenticated" : "Unauthenticated";
             var users = await _userService.GetUsers();
+            if(users == null)
+                return Unauthorized();
+
             return View(users);
         }
         public async Task<IActionResult> Register()
@@ -36,14 +39,19 @@ namespace PullAt.Controllers{
         }
         public async Task<IActionResult> Delete(int id){
             await _userService.Delete(id);
-            return RedirectToAction("UserList");
+            return RedirectToAction(nameof(UserList));
         }
+        public async Task<IActionResult> Logout(){
+            await HttpContext.SignOutAsync("Cookies");
+            return RedirectToAction("Login");
+        }
+        #region HTTP VERBS
         [HttpPost]
         public async Task<ActionResult> Register(User user)
         {
             bool condition = await _userService.Add(user);
             if (!condition){
-                 ModelState.AddModelError("", "Username or Email already exists.");
+                ModelState.AddModelError("", "Username or Email already exists.");
                 return View(user); 
             }
             return RedirectToAction(nameof(UserList));
@@ -52,15 +60,25 @@ namespace PullAt.Controllers{
         public async Task<ActionResult> Edit(User user,int id)
         {
             await _userService.Edit(user,id);
-            return RedirectToAction("UserList");
+            return RedirectToAction(nameof(UserList));
         }
         [HttpPost]
-        public async Task<ActionResult> Login(User user)
+        public async Task<IActionResult> Login(User user)
         {
-            if(await _userService.Validate(user) == true)
-                return RedirectToAction("UserList");
+            var token = await _userService.Login(user); 
+            if(token != null){
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.Username)
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
+                var principal = new ClaimsPrincipal(claimsIdentity);
+                await HttpContext.SignInAsync("Cookies", principal);
 
-            return RedirectToAction("Login");
+                return RedirectToAction("Files","File");
+            }
+            return RedirectToAction(nameof(Login));
         }
+        #endregion
     }
 }
