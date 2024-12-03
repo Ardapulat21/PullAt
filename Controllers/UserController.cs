@@ -5,7 +5,8 @@ using PullAt.Interfaces;
 using PullAt.Models;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-namespace PullAt.Controllers{
+namespace PullAt.Controllers
+{
     public class UserController : Controller 
     {
         IUserService _userService;

@@ -24,6 +24,11 @@ builder.Services.ConfigureApplicationCookie(options =>
     });
 
 builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IFileService, FileService>();
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10 MB
+});
 var app = builder.Build();
 
 app.UseStaticFiles();
@@ -43,6 +48,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=File}/{action=Files}/{id?}");
 
 app.Run();

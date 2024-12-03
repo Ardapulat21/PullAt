@@ -12,7 +12,7 @@ html {
 }
 body {
     margin:0;
-    background-image: url('../src/Flemingo.jpg');
+    background-image: url('../Assets/Flemingo.jpg');
     background-repeat: no-repeat; 
     background-size: cover; 
     background-position: center; 
