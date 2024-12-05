@@ -7,10 +7,12 @@ namespace PullAt.Services
     public class UserService : IUserService
     {
         HttpClient _httpClient;
-        private readonly string? apiUrl;
-        public UserService(HttpClient httpClient,IConfiguration configuration){
+        private readonly string apiUrl;
+        private readonly string _usersFolder;
+        public UserService(HttpClient httpClient,IConfiguration configuration,IWebHostEnvironment env){
             _httpClient = httpClient;
             apiUrl = Path.Combine(configuration["ApiSettings:APIUrl"],"User");
+            _usersFolder = Path.Combine(env.WebRootPath,"Users");
         }
         public async Task<List<User>?> GetUsers(){
             var url = Path.Combine(apiUrl,"GetAllUsers");
@@ -24,18 +26,22 @@ namespace PullAt.Services
             }
             return null;
         }
-        public async Task<bool> Add(User credentials){
+        public async Task<bool> Register(User user){
             var url = Path.Combine(apiUrl,"Register");
-            var response = await _httpClient.PostAsJsonAsync(url, credentials);
+            var response = await _httpClient.PostAsJsonAsync(url, user);
             if (response.IsSuccessStatusCode)
                 return true;
 
             return false;
         }
-        public async Task<string?> Login(User credentials){
+        public async Task<string?> Login(User user){
             var url = Path.Combine(apiUrl,"Login");
-            var response = await _httpClient.PostAsJsonAsync(url, credentials);
+            var response = await _httpClient.PostAsJsonAsync(url, user);
             if (response.IsSuccessStatusCode){
+                Status.User = user;
+                var resourceFolder = Path.Combine(_usersFolder,user.Username);
+                FileService.MakeDirectory(resourceFolder);
+
                 var token = await response.Content.ReadAsStringAsync();
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 return token;

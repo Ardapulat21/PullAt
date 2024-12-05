@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
-using PullAt.Data;
 using PullAt.Interfaces;
 using PullAt.Services;
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +19,7 @@ builder.Services.ConfigureApplicationCookie(options =>
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
         options.Cookie.SameSite = SameSiteMode.Strict; 
         options.LoginPath = "/User/Login"; 
+        options.LogoutPath = "/User/Logout"; 
     });
 
 builder.Services.AddSingleton<IUserService, UserService>();

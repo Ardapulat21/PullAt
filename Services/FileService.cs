@@ -7,19 +7,20 @@ namespace PullAt.Services
 {
     public class FileService : IFileService
     {
-        private readonly string _uploadFolder;
+        private readonly string _usersFolder;
         public FileService(IWebHostEnvironment env)
         {
-            _uploadFolder = Path.Combine(env.WebRootPath,"Uploads");
+            _usersFolder = Path.Combine(env.WebRootPath,"Users");
         }
         public Result GetFiles()
         {
             var _files = new List<FileInfo>();
             string filename;
             string extension;
-            if (Directory.Exists(_uploadFolder))
+            var _userFolder = Path.Combine(_usersFolder,Status.User.Username);
+            if (Directory.Exists(_userFolder))
             {
-                var fileEntries = Directory.GetFiles(_uploadFolder);
+                var fileEntries = Directory.GetFiles(_userFolder);
                 foreach (var filePath in fileEntries)
                 {
                     filename = Path.GetFileName(filePath);
@@ -30,7 +31,7 @@ namespace PullAt.Services
                     _files.Add(new FileInfo
                     {
                         Filename = filename,
-                        FilePath = "/uploads/"+filename,
+                        FilePath = Path.Combine("Users",Status.User.Username,filename),
                         DateTime = File.GetCreationTime(filePath)
                     });
                 }
@@ -49,12 +50,18 @@ namespace PullAt.Services
             {
                 return Result.Failure("The uploaded file must be jpg or png.");
             }
-            var filePath = CreateFilePath(_uploadFolder,file.FileName,extension);
+            var _userFolder = Path.Combine(_usersFolder,Status.User.Username);
+
+            var filePath = CreateFilePath(_userFolder,file.FileName,extension);
             await SaveFile(file,filePath);
 
             return Result.Success();
         }
-        private string CreateFilePath(string directoryPath,string fileName,string extension){
+        public static void MakeDirectory(string path){
+            if(!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+        }
+        public static string CreateFilePath(string directoryPath,string fileName,string extension){
             var filePath = Path.Combine(directoryPath,fileName);
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
             int suffix = 1;

@@ -50,7 +50,7 @@ namespace PullAt.Controllers
         [HttpPost]
         public async Task<ActionResult> Register(User user)
         {
-            bool condition = await _userService.Add(user);
+            bool condition = await _userService.Register(user);
             if (!condition){
                 ModelState.AddModelError("", "Username or Email already exists.");
                 return View(user); 
