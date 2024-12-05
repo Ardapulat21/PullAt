@@ -19,8 +19,8 @@
                     <input asp-for="Password" type="Password" id="Password" name="Password" style="margin-left:3px" required>
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" id="showPassword" />
-                    <label for="showPassword">Show Password</label>
+                    <input type="checkbox" id="passwordCheckbox" />
+                    <label for="passwordCheckbox">Show Password</label>
                 </div>
                 <div>
                     @Html.ValidationSummary(true, "", new { @style = "margin-left:55px;text-align:left;color:red"})
@@ -32,3 +32,5 @@
         </div>
     </div>
 }
+
+<script src="~/js/login.js" asp-append-version="true"></script>
