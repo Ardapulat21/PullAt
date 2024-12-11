@@ -2,6 +2,8 @@ using PullAt.Interfaces;
 using PullAt.Models;
 using FileInfo = PullAt.Models.FileInfo;
 using System.IO;
+using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 
 namespace PullAt.Services
 {
@@ -10,16 +12,17 @@ namespace PullAt.Services
         private readonly string _usersFolder;
         public FileService(IWebHostEnvironment env)
         {
-            _usersFolder = Path.Combine(env.WebRootPath,"Users");
+            _usersFolder = Path.Combine(env.ContentRootPath,"Users");
         }
+        // LIST -> IEnumerable yapilabilir.
         public Result GetFiles()
         {
             var _files = new List<FileInfo>();
             string filename;
             string extension;
-            var _userFolder = Path.Combine(_usersFolder,Status.User.Username);
-            if (Directory.Exists(_userFolder))
+            try
             {
+                var _userFolder = Path.Combine(_usersFolder,Status.User.Username);
                 var fileEntries = Directory.GetFiles(_userFolder);
                 foreach (var filePath in fileEntries)
                 {
@@ -35,9 +38,12 @@ namespace PullAt.Services
                         DateTime = File.GetCreationTime(filePath)
                     });
                 }
+                return Result.Success(_files.OrderBy(f => f.DateTime).ToList());
             }
-            _files = _files.OrderBy(f => f.DateTime).ToList(); 
-            return Result.Success(_files);
+            catch(Exception ex)
+            {
+                return Result.Failure(_files);
+            }
         }
         public async Task<Result> UploadFile(IFormFile file)
         {
@@ -56,10 +62,6 @@ namespace PullAt.Services
             await SaveFile(file,filePath);
 
             return Result.Success();
-        }
-        public static void MakeDirectory(string path){
-            if(!Directory.Exists(path))
-                Directory.CreateDirectory(path);
         }
         public static string CreateFilePath(string directoryPath,string fileName,string extension){
             var filePath = Path.Combine(directoryPath,fileName);

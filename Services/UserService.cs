@@ -12,7 +12,7 @@ namespace PullAt.Services
         public UserService(HttpClient httpClient,IConfiguration configuration,IWebHostEnvironment env){
             _httpClient = httpClient;
             apiUrl = Path.Combine(configuration["ApiSettings:APIUrl"],"User");
-            _usersFolder = Path.Combine(env.WebRootPath,"Users");
+            _usersFolder = Path.Combine(env.ContentRootPath,"Users");
         }
         public async Task<List<User>?> GetUsers(){
             var url = Path.Combine(apiUrl,"GetAllUsers");
@@ -40,7 +40,8 @@ namespace PullAt.Services
             if (response.IsSuccessStatusCode){
                 Status.User = user;
                 var resourceFolder = Path.Combine(_usersFolder,user.Username);
-                FileService.MakeDirectory(resourceFolder);
+                if(!Directory.Exists(resourceFolder))
+                    Directory.CreateDirectory(resourceFolder);
 
                 var token = await response.Content.ReadAsStringAsync();
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
