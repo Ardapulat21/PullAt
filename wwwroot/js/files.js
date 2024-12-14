@@ -51,11 +51,12 @@ fileInput.addEventListener("change", function (event) {
 const galleryImages = document.querySelectorAll('.gallery-item');
 const imageOverlay = document.querySelector('.image-overlay');
 const img = document.querySelector('.img');
-
+const title = document.querySelector('.title');
 galleryImages.forEach(function(image) {
     image.addEventListener('click', function() {
         const imagePath = this.getAttribute('src');
         img.src = imagePath;
+        title.textContent = this.getAttribute('name');
         imageOverlay.style.display = 'block';
     });
 });

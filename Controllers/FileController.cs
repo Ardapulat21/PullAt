@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using PullAt.Interfaces;
-using FileInfo = PullAt.Models;
+using FileInfo = PullAt.Models.FileInfo;
 namespace PullAt.Controllers
 {
     [Authorize]
@@ -26,7 +26,7 @@ namespace PullAt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("download/{fileName}")]
+        [HttpGet("DownloadFile/{filename}")]
         public IActionResult DownloadFile(string filename){
             try{
                 var folderPath = Path.Combine(_usersFolder,User.Identity.Name);
@@ -53,17 +53,16 @@ namespace PullAt.Controllers
         [HttpGet]
         public IActionResult Files()
         {
-            var imageUrls = new List<string?>();
+            var fileInfos = new List<FileInfo?>();
             try{
                 if(!User.Identity.IsAuthenticated){
                     return RedirectToAction("Login","User");
                 }
-                imageUrls = _fileService.GetFiles()
-                .Select(file => Url.Action("GetImage", "File", new { file.FilePath }))
-                .ToList();
+                fileInfos = _fileService.GetFiles();
+                fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
             }
             catch(Exception ex){}
-            return View(imageUrls);
+            return View(fileInfos);
         }
         [HttpGet]
         public IActionResult GetImage(string filePath)
