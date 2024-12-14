@@ -10,40 +10,34 @@ namespace PullAt.Services
     public class FileService : IFileService
     {
         private readonly string _usersFolder;
-        public FileService(IWebHostEnvironment env)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public FileService(IWebHostEnvironment env,IHttpContextAccessor httpContextAccessor)
         {
             _usersFolder = Path.Combine(env.ContentRootPath,"Users");
+            _httpContextAccessor = httpContextAccessor;
         }
-        // LIST -> IEnumerable yapilabilir.
-        public Result GetFiles()
+        public List<FileInfo>? GetFiles()
         {
-            var _files = new List<FileInfo>();
-            string filename;
-            string extension;
+            var files = new List<FileInfo>();
             try
             {
-                var _userFolder = Path.Combine(_usersFolder,Status.User.Username);
-                var fileEntries = Directory.GetFiles(_userFolder);
-                foreach (var filePath in fileEntries)
-                {
-                    filename = Path.GetFileName(filePath);
-                    extension = Path.GetExtension(filePath);
-                    if(extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                        continue;   
-
-                    _files.Add(new FileInfo
-                    {
-                        Filename = filename,
-                        FilePath = Path.Combine("Users",Status.User.Username,filename),
-                        DateTime = File.GetCreationTime(filePath)
+                var username = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+                var folderPath = Path.Combine(_usersFolder,username);
+                if(!Directory.Exists(folderPath)){
+                    return null;
+                }
+                var filePaths = Directory.GetFiles(folderPath);
+                foreach (var file in filePaths){
+                    files.Add(new Models.FileInfo(){
+                        Filename = Path.GetFileName(file),
+                        FilePath = file,
+                        DateTime = System.IO.File.GetCreationTime(file)
                     });
                 }
-                return Result.Success(_files.OrderBy(f => f.DateTime).ToList());
+                files = files.OrderBy(image => image.DateTime).ToList();
             }
-            catch(Exception ex)
-            {
-                return Result.Failure(_files);
-            }
+            catch(Exception ex){}
+            return files;
         }
         public async Task<Result> UploadFile(IFormFile file)
         {
@@ -56,7 +50,8 @@ namespace PullAt.Services
             {
                 return Result.Failure("The uploaded file must be jpg or png.");
             }
-            var _userFolder = Path.Combine(_usersFolder,Status.User.Username);
+            var username = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+            var _userFolder = Path.Combine(_usersFolder,username);
 
             var filePath = CreateFilePath(_userFolder,file.FileName,extension);
             await SaveFile(file,filePath);

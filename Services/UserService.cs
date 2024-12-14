@@ -38,7 +38,6 @@ namespace PullAt.Services
             var url = Path.Combine(apiUrl,"Login");
             var response = await _httpClient.PostAsJsonAsync(url, user);
             if (response.IsSuccessStatusCode){
-                Status.User = user;
                 var resourceFolder = Path.Combine(_usersFolder,user.Username);
                 if(!Directory.Exists(resourceFolder))
                     Directory.CreateDirectory(resourceFolder);

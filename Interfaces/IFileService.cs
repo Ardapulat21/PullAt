@@ -1,3 +1,4 @@
+using FileInfo = PullAt.Models.FileInfo;
 using PullAt.Models;
 
 namespace PullAt.Interfaces
@@ -5,6 +6,6 @@ namespace PullAt.Interfaces
     public interface IFileService
     {
         public Task<Result> UploadFile(IFormFile file);
-        public Result GetFiles();
+        public List<FileInfo> GetFiles();
     }
 }

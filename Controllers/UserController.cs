@@ -36,8 +36,9 @@ namespace PullAt.Controllers
         }
         public async Task<IActionResult> Login()
         {
-            if(User.Identity.IsAuthenticated)
+            if(User.Identity.IsAuthenticated){
                 return RedirectToAction("Index","Home");
+            }
             return View();
         }
         public async Task<IActionResult> Delete(int id){
