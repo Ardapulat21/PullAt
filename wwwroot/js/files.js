@@ -48,15 +48,18 @@ fileInput.addEventListener("change", function (event) {
         });
     }
 });
+
 const galleryImages = document.querySelectorAll('.gallery-item');
 const imageOverlay = document.querySelector('.image-overlay');
 const img = document.querySelector('.img');
 const title = document.querySelector('.title');
+var filename;
 galleryImages.forEach(function(image) {
     image.addEventListener('click', function() {
         const imagePath = this.getAttribute('src');
         img.src = imagePath;
-        title.textContent = this.getAttribute('name');
+        filename = this.getAttribute('name');
+        title.textContent =  filename;
         imageOverlay.style.display = 'block';
     });
 });
@@ -64,6 +67,24 @@ galleryImages.forEach(function(image) {
 const imageContainer = document.getElementById('imageContainer');
 imageContainer.addEventListener('click',function() {
     imageOverlay.style.display = 'none';
+});
+
+const downloadButton = document.getElementById('downloadButton');
+downloadButton.addEventListener('click',function() {
+    console.log(`${filename}`);
+    fetch(`/File/DownloadFile/${filename}`)
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(err => console.error('Error downloading file:', err));
 });
 
 const exitButton = document.getElementById('exitButton');

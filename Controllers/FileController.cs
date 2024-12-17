@@ -6,6 +6,7 @@ using FileInfo = PullAt.Models.FileInfo;
 namespace PullAt.Controllers
 {
     [Authorize]
+    [Route("[controller]")]
     public class FileController : Controller
     {
         private readonly IFileService _fileService;
@@ -15,7 +16,7 @@ namespace PullAt.Controllers
             _fileService = fileService;
             _usersFolder = Path.Combine(env.ContentRootPath,"users");
         }
-        [HttpPost]
+        [HttpPost("UploadFile")]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             try{
@@ -50,21 +51,18 @@ namespace PullAt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet]
+        [HttpGet("Files")]
         public IActionResult Files()
         {
             var fileInfos = new List<FileInfo?>();
-            try{
-                if(!User.Identity.IsAuthenticated){
-                    return RedirectToAction("Login","User");
-                }
-                fileInfos = _fileService.GetFiles();
-                fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
+            if(!User.Identity.IsAuthenticated){
+                return RedirectToAction("Login","User");
             }
-            catch(Exception ex){}
+            fileInfos = _fileService.GetFiles();
+            fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
             return View(fileInfos);
         }
-        [HttpGet]
+        [HttpGet("GetImage")]
         public IActionResult GetImage(string filePath)
         {
             try{
