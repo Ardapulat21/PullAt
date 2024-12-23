@@ -20,7 +20,7 @@ namespace PullAt.Controllers
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             try{
-                var result = await _fileService.UploadFile(file);
+                var result = await _fileService.UploadFileAsync(file);
                 return result.IsSuccess ? RedirectToAction("Files") : BadRequest(result.Message);
             }
             catch(Exception ex){
@@ -28,39 +28,29 @@ namespace PullAt.Controllers
             }
         }
         [HttpGet("DownloadFile/{filename}")]
-        public IActionResult DownloadFile(string filename){
+        public async Task<IActionResult> DownloadFile(string filename){
             try{
-                var folderPath = Path.Combine(_usersFolder,User.Identity.Name);
-                var imagePath = Path.Combine(folderPath, filename);
-                
-                if (!System.IO.File.Exists(imagePath))
-                    return NotFound();
-
-                var contentType = "application/octet-stream";
-                var extension = Path.GetExtension(imagePath).ToLower();
-
-                if (extension == ".jpg" || extension == ".jpeg")
-                    contentType = "image/jpeg";
-                else if (extension == ".png")
-                    contentType = "image/png";
-
-                var fileBytes = System.IO.File.ReadAllBytes(imagePath);
-                return File(fileBytes, contentType, filename);
+                var data = await (dynamic)_fileService.DownloadFileAsync(filename,User.Identity.Name);
+                return File(data.fileBytes, data.contentType, filename);
             }
             catch (Exception ex){
                 return BadRequest(ex.Message);
             }
         }
         [HttpGet("Files")]
-        public IActionResult Files()
+        public async Task<IActionResult> Files()
         {
-            var fileInfos = new List<FileInfo?>();
             if(!User.Identity.IsAuthenticated){
                 return RedirectToAction("Login","User");
             }
-            fileInfos = _fileService.GetFiles();
-            fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
+            var fileInfos = FetchFiles();
             return View(fileInfos);
+        }
+        [HttpGet("GetFiles")]
+        public IActionResult GetFiles()
+        {
+            var fileInfos = FetchFiles();
+            return Json(fileInfos);
         }
         [HttpGet("GetImage")]
         public IActionResult GetImage(string filePath)
@@ -73,6 +63,12 @@ namespace PullAt.Controllers
             catch(Exception ex){
                 return BadRequest(ex.Message);
             }
+        }
+        public List<FileInfo?> FetchFiles(){
+            var fileInfos = new List<FileInfo?>();
+            fileInfos = _fileService.GetFiles();
+            fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
+            return fileInfos;
         }
     }
 }

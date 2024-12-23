@@ -5,7 +5,8 @@ namespace PullAt.Interfaces
 {
     public interface IFileService
     {
-        public Task<Result> UploadFile(IFormFile file);
+        public Task<Result> UploadFileAsync(IFormFile file);
+        public Task<object> DownloadFileAsync(string filename,string username);
         public List<FileInfo> GetFiles();
     }
 }

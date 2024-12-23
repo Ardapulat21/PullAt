@@ -39,7 +39,7 @@ namespace PullAt.Services
             catch(Exception ex){}
             return files;
         }
-        public async Task<Result> UploadFile(IFormFile file)
+        public async Task<Result> UploadFileAsync(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
@@ -74,6 +74,26 @@ namespace PullAt.Services
             {
                 await file.CopyToAsync(stream);
             }
+        }
+
+        public async Task<object> DownloadFileAsync(string filename,string username)
+        {
+            var folderPath = Path.Combine(_usersFolder,username);
+            var imagePath = Path.Combine(folderPath, filename);
+            
+            if (!System.IO.File.Exists(imagePath))
+                return null;
+
+            var extension = Path.GetExtension(imagePath).ToLower();
+            string contentType = extension switch 
+            {
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                _ => "application/octet-stream"
+            };
+            var fileBytes = System.IO.File.ReadAllBytes(imagePath);
+            return new { fileBytes, contentType };
         }
     }
 }

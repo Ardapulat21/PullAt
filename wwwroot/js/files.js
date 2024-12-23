@@ -25,6 +25,66 @@ button.addEventListener("click",function(){
         }
     }
 });
+
+function GetFiles() {
+    const fileGrid = document.querySelector(".file-grid");
+    fileGrid.innerHTML = ""; 
+    $.ajax({
+        type: "GET",
+        url: "GetFiles",
+        dataType: "json",
+        success: function(response) {
+            Object.keys(response).forEach(key => {
+                var file = response[key];
+                console.log(file); 
+                console.log(file.filePath); 
+                console.log(file.filename); 
+                const fileItem = document.createElement("div");
+                fileItem.className = "file-item";
+                
+                const img = document.createElement("img");
+                img.name = file.filename;
+                img.src = file.filePath;
+                img.className = "gallery-item";
+
+                fileItem.appendChild(img);
+                fileGrid.appendChild(fileItem);
+            });
+        },
+        error: function(xhr,status,error){
+            console.log(error);
+        }
+    });
+}
+
+function loadGallery() {
+    fetch('/File/Test2')
+        .then(response => response.json())
+        .then(files => {
+            const fileGrid = document.querySelector(".file-grid");
+            fileGrid.innerHTML = ""; // Clear existing content if needed
+            files.forEach(file => {
+                console.log(`Path: ${file.FilePath} Name:${file.Filename}`);
+                // Create the file-item container
+                const fileItem = document.createElement("div");
+                fileItem.className = "file-item";
+
+                // Create the img element
+                const img = document.createElement("img");
+                img.name = file.Filename;
+                img.src = file.FilePath;
+                img.className = "gallery-item";
+
+                // Append the img to the file-item
+                fileItem.appendChild(img);
+
+                // Append the file-item to the file-grid
+                fileGrid.appendChild(fileItem);
+            });
+        })
+        .catch(error => console.error("Error loading files:", error));
+}
+
 const fileInput = document.getElementById("fileInput");
 fileInput.addEventListener("change", function (event) {
     const file = event.target.files[0];
@@ -38,6 +98,7 @@ fileInput.addEventListener("change", function (event) {
         .then(response => {
             if (response.ok) {
                 console.log("File uploaded successfully.");
+                GetFiles();
             } else {
                 console.log("File upload failed.");
             }
