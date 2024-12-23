@@ -1,3 +1,4 @@
+//#region Expandable Button
 var button = document.getElementById("expandableButton");
 var contents = document.getElementsByClassName("content");
 var icon = document.getElementById("icon");
@@ -25,66 +26,6 @@ button.addEventListener("click",function(){
         }
     }
 });
-
-function GetFiles() {
-    const fileGrid = document.querySelector(".file-grid");
-    fileGrid.innerHTML = ""; 
-    $.ajax({
-        type: "GET",
-        url: "GetFiles",
-        dataType: "json",
-        success: function(response) {
-            Object.keys(response).forEach(key => {
-                var file = response[key];
-                console.log(file); 
-                console.log(file.filePath); 
-                console.log(file.filename); 
-                const fileItem = document.createElement("div");
-                fileItem.className = "file-item";
-                
-                const img = document.createElement("img");
-                img.name = file.filename;
-                img.src = file.filePath;
-                img.className = "gallery-item";
-
-                fileItem.appendChild(img);
-                fileGrid.appendChild(fileItem);
-            });
-        },
-        error: function(xhr,status,error){
-            console.log(error);
-        }
-    });
-}
-
-function loadGallery() {
-    fetch('/File/Test2')
-        .then(response => response.json())
-        .then(files => {
-            const fileGrid = document.querySelector(".file-grid");
-            fileGrid.innerHTML = ""; // Clear existing content if needed
-            files.forEach(file => {
-                console.log(`Path: ${file.FilePath} Name:${file.Filename}`);
-                // Create the file-item container
-                const fileItem = document.createElement("div");
-                fileItem.className = "file-item";
-
-                // Create the img element
-                const img = document.createElement("img");
-                img.name = file.Filename;
-                img.src = file.FilePath;
-                img.className = "gallery-item";
-
-                // Append the img to the file-item
-                fileItem.appendChild(img);
-
-                // Append the file-item to the file-grid
-                fileGrid.appendChild(fileItem);
-            });
-        })
-        .catch(error => console.error("Error loading files:", error));
-}
-
 const fileInput = document.getElementById("fileInput");
 fileInput.addEventListener("change", function (event) {
     const file = event.target.files[0];
@@ -109,27 +50,62 @@ fileInput.addEventListener("change", function (event) {
         });
     }
 });
+//#endregion
 
-const galleryImages = document.querySelectorAll('.gallery-item');
-const imageOverlay = document.querySelector('.image-overlay');
-const img = document.querySelector('.img');
-const title = document.querySelector('.title');
-var filename;
-galleryImages.forEach(function(image) {
-    image.addEventListener('click', function() {
-        const imagePath = this.getAttribute('src');
-        img.src = imagePath;
-        filename = this.getAttribute('name');
-        title.textContent =  filename;
-        imageOverlay.style.display = 'block';
+function GetFiles() {
+    const fileGrid = document.querySelector(".file-grid");
+    fileGrid.innerHTML = ""; 
+    $.ajax({
+        type: "GET",
+        url: "/File/GetFiles",
+        dataType: "json",
+        success: function(response) {
+            Object.keys(response).forEach(key => {
+                var file = response[key];
+                const fileItem = document.createElement("div");
+                fileItem.classList.add("file-item");
+                
+                const img = document.createElement("img");
+                img.name = file.filename;
+                img.src = file.filePath;
+                img.classList.add("gallery-item");
+
+                fileItem.appendChild(img);
+                fileGrid.appendChild(fileItem);
+            });
+        },
+        error: function(xhr,status,error){
+            console.log(error);
+        }
     });
+}
+
+var filename;
+const overlayContainer = document.querySelector('.overlay-container');
+const imageOverlay = document.querySelector('.image-overlay');
+const overlayTitle = document.querySelector('.overlay-title');
+
+const fileGrid = document.querySelector('.file-grid');
+fileGrid.addEventListener('click',function(event) {
+    if (event.target.closest('.file-item')) {
+        const clickedImg = event.target.closest('.file-item');
+        if (clickedImg) {
+            const childImage = clickedImg.querySelector('.gallery-item');
+            const imagePath = childImage.getAttribute('src');
+            imageOverlay.src = imagePath;
+            filename = childImage.getAttribute('name');
+            overlayTitle.textContent =  filename;
+            overlayContainer.style.display = 'block';
+        }
+    }
 });
 
 const imageContainer = document.getElementById('imageContainer');
 imageContainer.addEventListener('click',function() {
-    imageOverlay.style.display = 'none';
+    overlayContainer.style.display = 'none';
 });
 
+//#region Buttons
 const downloadButton = document.getElementById('downloadButton');
 downloadButton.addEventListener('click',function() {
     console.log(`${filename}`);
@@ -150,5 +126,6 @@ downloadButton.addEventListener('click',function() {
 
 const exitButton = document.getElementById('exitButton');
 exitButton.addEventListener('click',function() {
-    imageOverlay.style.display = 'none';
+    overlayContainer.style.display = 'none';
 });
+//#endregion 

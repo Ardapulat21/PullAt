@@ -28,7 +28,6 @@
     background-color: rgba(249, 249, 249, 0.3);
 }
 
-
 .expandableMenu{
     position: absolute;
     left: 20px;
@@ -61,7 +60,7 @@
     flex-direction: column;
 }
 
-.image-overlay{
+.overlay-container{
     position:absolute;
     top: 50%; 
     left: 50%; 
@@ -93,10 +92,10 @@
     padding-left: 5px;
     padding-top: 3px;
 }
-.title{
+.overlay-title{
     font-size: 15px;
 }
-.img{
+.image-overlay{
     max-width: 100%; 
     max-height: 100%;
     vertical-align:bottom;
