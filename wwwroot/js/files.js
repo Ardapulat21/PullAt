@@ -52,7 +52,7 @@ fileInput.addEventListener("change", function (event) {
 });
 //#endregion
 
-function GetFiles() {
+let GetFiles = () => {
     const fileGrid = document.querySelector(".file-grid");
     fileGrid.innerHTML = ""; 
     $.ajax({
@@ -80,13 +80,7 @@ function GetFiles() {
     });
 }
 
-var filename;
-const overlayContainer = document.querySelector('.overlay-container');
-const imageOverlay = document.querySelector('.image-overlay');
-const overlayTitle = document.querySelector('.overlay-title');
-
-const fileGrid = document.querySelector('.file-grid');
-fileGrid.addEventListener('click',function(event) {
+let displayImage = (event) => {
     if (event.target.closest('.file-item')) {
         const clickedImg = event.target.closest('.file-item');
         if (clickedImg) {
@@ -98,17 +92,23 @@ fileGrid.addEventListener('click',function(event) {
             overlayContainer.style.display = 'block';
         }
     }
-});
+};
+
+var filename;
+const overlayContainer = document.querySelector('.overlay-container');
+const imageOverlay = document.querySelector('.image-overlay');
+const overlayTitle = document.querySelector('.overlay-title');
+
+const fileGrid = document.querySelector('.file-grid');
+fileGrid.addEventListener('click',displayImage);
 
 const imageContainer = document.getElementById('imageContainer');
-imageContainer.addEventListener('click',function() {
+imageContainer.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
 
 //#region Buttons
-const downloadButton = document.getElementById('downloadButton');
-downloadButton.addEventListener('click',function() {
-    console.log(`${filename}`);
+let download = () => {
     fetch(`/File/DownloadFile/${filename}`)
     .then(response => response.blob())
     .then(blob => {
@@ -122,10 +122,12 @@ downloadButton.addEventListener('click',function() {
         window.URL.revokeObjectURL(url);
     })
     .catch(err => console.error('Error downloading file:', err));
-});
+};
+const downloadButton = document.getElementById('downloadButton');
+downloadButton.addEventListener('click',download);
 
 const exitButton = document.getElementById('exitButton');
-exitButton.addEventListener('click',function() {
+exitButton.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
 //#endregion 
