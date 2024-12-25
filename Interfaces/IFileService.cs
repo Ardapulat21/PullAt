@@ -7,6 +7,6 @@ namespace PullAt.Interfaces
     {
         public Task<Result> UploadFileAsync(IFormFile file);
         public Task<object> DownloadFileAsync(string filename,string username);
-        public List<FileInfo> GetFiles();
+        public List<FileInfo> GetFiles(string username);
     }
 }

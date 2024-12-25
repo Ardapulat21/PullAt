@@ -66,7 +66,7 @@ namespace PullAt.Controllers
         }
         public List<FileInfo?> FetchFiles(){
             var fileInfos = new List<FileInfo?>();
-            fileInfos = _fileService.GetFiles();
+            fileInfos = _fileService.GetFiles(User.Identity.Name);
             fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
             return fileInfos;
         }

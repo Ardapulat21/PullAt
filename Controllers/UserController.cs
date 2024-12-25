@@ -41,20 +41,19 @@ namespace PullAt.Controllers
             }
             return View();
         }
+        public async Task<IActionResult> Logout(){
+            return RedirectToAction("Login");
+        }
         public async Task<IActionResult> Delete(int id){
             await _userService.Delete(id);
             return RedirectToAction(nameof(UserList));
-        }
-        public async Task<IActionResult> Logout(){
-            await HttpContext.SignOutAsync("Cookies");
-            return RedirectToAction("Login");
         }
         #region HTTP VERBS
         [HttpPost]
         public async Task<ActionResult> Register(User user)
         {
-            bool condition = await _userService.Register(user);
-            if (!condition){
+            bool isValid = await _userService.Register(user);
+            if (!isValid){
                 ModelState.AddModelError("", "Username or Email already exists.");
                 return View(user); 
             }
@@ -67,19 +66,13 @@ namespace PullAt.Controllers
             return RedirectToAction(nameof(UserList));
         }
         [HttpPost]
-        public async Task<IActionResult> Login(User user)
+        public async Task<IActionResult> Login(User user)   
         {
             var token = await _userService.Login(user); 
             if(token != null){
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.Username)
-                };
-                var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
-                var principal = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.SignInAsync("Cookies", principal);
-
-                return RedirectToAction("Files","File");
+                // _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
+                HttpContext.Session.SetString("Token", token);
+                return Redirect("/File/Files");
             }
             return RedirectToAction(nameof(Login));
         }
