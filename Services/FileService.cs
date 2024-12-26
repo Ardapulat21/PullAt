@@ -16,12 +16,11 @@ namespace PullAt.Services
             _usersFolder = Path.Combine(env.ContentRootPath,"Users");
             _httpContextAccessor = httpContextAccessor;
         }
-        public List<FileInfo>? GetFiles()
+        public List<FileInfo>? GetFiles(string username)
         {
             var files = new List<FileInfo>();
             try
             {
-                var username = _httpContextAccessor.HttpContext?.User.Identity?.Name;
                 var folderPath = Path.Combine(_usersFolder,username);
                 if(!Directory.Exists(folderPath)){
                     return null;
@@ -36,7 +35,9 @@ namespace PullAt.Services
                 }
                 files = files.OrderBy(image => image.DateTime).ToList();
             }
-            catch(Exception ex){}
+            catch(Exception ex){
+                Console.WriteLine($"Message: {ex.Message}");
+            }
             return files;
         }
         public async Task<Result> UploadFileAsync(IFormFile file)

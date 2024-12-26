@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PullAt.Interfaces;
@@ -15,10 +16,6 @@ namespace PullAt.Controllers
         {
             _userService = userService;
             _httpClient = httpClient;
-        }
-        public async Task<IActionResult> Edit(int id)
-        {
-            return View();
         }
         [Authorize]
         public async Task<IActionResult> UserList()
@@ -46,28 +43,24 @@ namespace PullAt.Controllers
             return RedirectToAction(nameof(UserList));
         }
         public async Task<IActionResult> Logout(){
-            await HttpContext.SignOutAsync("Cookies");
+            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            Response.Cookies.Delete("AuthToken");
             return RedirectToAction("Login");
         }
         #region HTTP VERBS
         [HttpPost]
         public async Task<ActionResult> Register(User user)
         {
-            bool condition = await _userService.Register(user);
-            if (!condition){
+            bool isValid = await _userService.Register(user);
+            if (!isValid){
                 ModelState.AddModelError("", "Username or Email already exists.");
                 return View(user); 
             }
             return RedirectToAction(nameof(UserList));
         }
         [HttpPost]
-        public async Task<ActionResult> Edit(User user,int id)
-        {
-            await _userService.Edit(user,id);
-            return RedirectToAction(nameof(UserList));
-        }
-        [HttpPost]
-        public async Task<IActionResult> Login(User user)
+        public async Task<IActionResult> Login(User user)   
         {
             var token = await _userService.Login(user); 
             if(token != null){
@@ -75,11 +68,15 @@ namespace PullAt.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.Username)
                 };
-                var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
-                var principal = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.SignInAsync("Cookies", principal);
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                return RedirectToAction("Files","File");
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity));
+                    
+                HttpContext.Session.SetString("Token", token);//For HTTP Header
+                Response.Cookies.Append("AuthToken", token);//For storing JWT Token
+                return Redirect("/File/Files");
             }
             return RedirectToAction(nameof(Login));
         }
