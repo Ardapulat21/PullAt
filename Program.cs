@@ -39,7 +39,24 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
         ClockSkew = TimeSpan.Zero
     };
-});
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            context.Token = context.HttpContext.Request.Cookies["AuthToken"];
+            return Task.CompletedTask;
+        },
+    };
+}).AddCookie(options =>
+{
+    options.Cookie.HttpOnly = true; // Prevent JavaScript access to cookies
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Enforce HTTPS
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+    options.LoginPath = "/User/Login"; 
+    options.Cookie.SameSite = SameSiteMode.Strict; 
+    options.LogoutPath = "/User/Logout"; 
+}   
+);
 
 builder.Services.AddAuthorization();
 

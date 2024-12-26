@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PullAt.Interfaces;
@@ -15,10 +16,6 @@ namespace PullAt.Controllers
         {
             _userService = userService;
             _httpClient = httpClient;
-        }
-        public async Task<IActionResult> Edit(int id)
-        {
-            return View();
         }
         [Authorize]
         public async Task<IActionResult> UserList()
@@ -41,12 +38,15 @@ namespace PullAt.Controllers
             }
             return View();
         }
-        public async Task<IActionResult> Logout(){
-            return RedirectToAction("Login");
-        }
         public async Task<IActionResult> Delete(int id){
             await _userService.Delete(id);
             return RedirectToAction(nameof(UserList));
+        }
+        public async Task<IActionResult> Logout(){
+            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            Response.Cookies.Delete("AuthToken");
+            return RedirectToAction("Login");
         }
         #region HTTP VERBS
         [HttpPost]
@@ -60,18 +60,22 @@ namespace PullAt.Controllers
             return RedirectToAction(nameof(UserList));
         }
         [HttpPost]
-        public async Task<ActionResult> Edit(User user,int id)
-        {
-            await _userService.Edit(user,id);
-            return RedirectToAction(nameof(UserList));
-        }
-        [HttpPost]
         public async Task<IActionResult> Login(User user)   
         {
             var token = await _userService.Login(user); 
             if(token != null){
-                // _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
-                HttpContext.Session.SetString("Token", token);
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.Username)
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity));
+                    
+                HttpContext.Session.SetString("Token", token);//For HTTP Header
+                Response.Cookies.Append("AuthToken", token);//For storing JWT Token
                 return Redirect("/File/Files");
             }
             return RedirectToAction(nameof(Login));
