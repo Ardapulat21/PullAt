@@ -7,10 +7,17 @@ using PullAt.Services;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IFileService, FileService>();
+
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient<IUserService,UserService>(
-    c => c.BaseAddress = new Uri("http://localhost:5134/"));
+builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
+
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10 MB
+});
 
 builder.Services.AddSession(options =>
 {
@@ -60,12 +67,6 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddSingleton<IUserService, UserService>();
-builder.Services.AddSingleton<IFileService, FileService>();
-builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10 MB
-});
 var app = builder.Build();
 
 app.UseStaticFiles();
