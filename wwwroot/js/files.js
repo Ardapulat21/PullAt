@@ -51,7 +51,7 @@ fileInput.addEventListener("change", function (event) {
     }
 });
 //#endregion
-
+//#region AJAX
 let GetFiles = () => {
     const fileGrid = document.querySelector(".file-grid");
     fileGrid.innerHTML = ""; 
@@ -59,7 +59,7 @@ let GetFiles = () => {
         type: "GET",
         url: "/File/GetFiles",
         dataType: "json",
-        success: function(response) {
+        success: (response) => {
             Object.keys(response).forEach(key => {
                 var file = response[key];
                 const fileItem = document.createElement("div");
@@ -74,26 +74,24 @@ let GetFiles = () => {
                 fileGrid.appendChild(fileItem);
             });
         },
-        error: function(xhr,status,error){
+        error: (xhr,status,error) => {
             console.log(error);
         }
     });
 }
-
+//#endregion AJAX
+//#region Overlay
 let displayImage = (event) => {
-    if (event.target.closest('.file-item')) {
-        const clickedImg = event.target.closest('.file-item');
-        if (clickedImg) {
-            const childImage = clickedImg.querySelector('.gallery-item');
-            const imagePath = childImage.getAttribute('src');
-            imageOverlay.src = imagePath;
-            filename = childImage.getAttribute('name');
-            overlayTitle.textContent =  filename;
-            overlayContainer.style.display = 'block';
-        }
+    const clickedImg = event.target.closest('.file-item');
+    if (clickedImg) {
+        const childImage = clickedImg.querySelector('.gallery-item');
+        const imagePath = childImage.getAttribute('src');
+        imageOverlay.src = imagePath;
+        filename = childImage.getAttribute('name');
+        overlayTitle.textContent =  filename;
+        overlayContainer.style.display = 'block';
     }
 };
-
 var filename;
 const overlayContainer = document.querySelector('.overlay-container');
 const imageOverlay = document.querySelector('.image-overlay');
@@ -106,8 +104,12 @@ const imageContainer = document.getElementById('imageContainer');
 imageContainer.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
-
+//#endregion Overlay
 //#region Buttons
+let selectButton = () => {
+    alert("hr");
+}
+
 let download = () => {
     fetch(`/File/DownloadFile/${filename}`)
     .then(response => response.blob())
