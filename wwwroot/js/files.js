@@ -1,3 +1,5 @@
+import { getRequest, postRequest} from "./Api/api.js";
+
 //#region Expandable Button
 var button = document.getElementById("expandableButton");
 var contents = document.getElementsByClassName("content");
@@ -181,15 +183,15 @@ exitButton.addEventListener('click',() => {
 
 
 
-// let deleteImage = () => {
-//     selectedImages.forEach((image) => {
-//         getRequest(`/File/DeleteFileAsync/${image}`,(data) => {
-//             console.log(`${data}`);
-//         });
-//     })
-// };
-// const deleteButton = document.getElementById('deleteButton');
-// deleteButton.addEventListener('click',deleteImage);
+let deleteImage = () => {
+    selectedImages.forEach((image) => {
+        getRequest(`/File/DeleteFileAsync/${image}`,(data) => {
+            console.log(`${data}`);
+        });
+    })
+};
+const deleteButton = document.getElementById('DeleteButton');
+deleteButton.addEventListener('click',deleteImage);
 //#endregion 
 
 

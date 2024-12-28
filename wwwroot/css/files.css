@@ -48,6 +48,7 @@
     background-color: rgb(171, 215, 247);
     width: 100px;
     max-height: 0px;
+    cursor:pointer;
     overflow: hidden;
     transition:max-height 0.7s ease-out;
 }

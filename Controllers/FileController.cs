@@ -70,7 +70,7 @@ namespace PullAt.Controllers
             fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
             return fileInfos;
         }
-         [HttpGet("DeleteFile/{filename}")]
+         [HttpGet("DeleteFileAsync/{filename}")]
         public async Task<IActionResult> DeleteFileAsync(string filename){
             var result = await _fileService.DeleteFileAsync(filename, User.Identity?.Name);
             if(result.IsSuccess){
