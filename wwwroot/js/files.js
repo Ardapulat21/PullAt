@@ -1,4 +1,5 @@
-import { getRequest, postRequest} from "./Api/api.js";
+import { GET, POST} from "./Api/api.js";
+import { addIfNotExist} from "./Utils/Utils.js";
 
 //#region Expandable Button
 var button = document.getElementById("expandableButton");
@@ -13,6 +14,7 @@ button.addEventListener("click",function(){
         icon.classList.remove("bi-caret-up");
         icon.classList.add("bi-caret-down");
     }
+
     for(var i = 0;i < contents.length; i++){
         var content = contents[i];
         if(content.style.maxHeight){
@@ -28,28 +30,16 @@ button.addEventListener("click",function(){
         }
     }
 });
+
 const fileInput = document.getElementById("fileInput");
-fileInput.addEventListener("change", function (event) {
+fileInput.addEventListener("change",async function (event) {
     const file = event.target.files[0];
     if (file) {
         const formData = new FormData();
         formData.append("file", file);
-        fetch("/File/UploadFile", {
-            method: "POST", 
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log("File uploaded successfully.");
-                GetFiles();
-            } else {
-                console.log("File upload failed.");
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            console.log("An error occurred while uploading the file.");
-        });
+        await POST(
+            "/File/UploadFile",formData)
+            .then(GetFiles);
     }
 });
 //#endregion
@@ -90,7 +80,6 @@ let displayImage = (event) => {
         const imageName = childImage.getAttribute('name');
         if(selectionMode){
             addIfNotExist(selectedImages,imageName);
-            console.log(selectedImages);
             return;
         }
         const imagePath = childImage.getAttribute('src');
@@ -181,36 +170,13 @@ exitButton.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
 
-
-
 let deleteImage = () => {
     selectedImages.forEach((image) => {
-        getRequest(`/File/DeleteFileAsync/${image}`,(data) => {
-            console.log(`${data}`);
-        });
-    })
+        GET(`/File/DeleteFileAsync/${image}`);
+    });
+    GetFiles();
 };
+
 const deleteButton = document.getElementById('DeleteButton');
 deleteButton.addEventListener('click',deleteImage);
 //#endregion 
-
-
-//#region COMMON
-
-let removeElementFromArray = (array,val) => {
-    const index = array.indexOf(val);
-    if(index > -1){
-        array.splice(index,1);
-    }
-}
-
-let addIfNotExist = (array,val) => {
-    if(!array.includes(val)){
-        array.push(val);
-    }
-    else{
-        removeElementFromArray(array,val);
-    }
-}
-
-//#endregion

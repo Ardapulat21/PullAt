@@ -1,35 +1,30 @@
-let getRequest = (url,callback) => {
-    fetch(url)
+ async function GET(url) {
+    await fetch(url)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return response.json(); // Parse JSON data
+            return response;
         })
-        .then(callback)
         .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
+            console.log(`There was a problem with the fetch operation: ${error}`);
         });
 };
 
-let postRequest = (url,data,callback) => {
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(callback)
-    .catch(error => {
-        console.error('Error:', error);
-    });
-};
+async function POST(url,data) {
+    await fetch(url, {
+            method: "POST", 
+            body: data
+        })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            console.log("An error occurred while sending the data.");
+        });
+}
 
-export { getRequest, postRequest};
+export { GET, POST };
