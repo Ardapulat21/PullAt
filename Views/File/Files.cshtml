@@ -11,15 +11,21 @@
                     <i id="icon" class="bi bi-caret-down"></i>
                 </div>
                 <div class="expandableItems">
-                    <div class="content" onclick="document.getElementById('fileInput').click()">
+                    <div class="content" id="UploadButton" onclick="document.getElementById('fileInput').click()">
                         <label>Upload</label>
                         <input type="file" id="fileInput" hidden/>
                     </div>
-                    <div class="content">Delete</div>
+                    <div class="content" id="SaveButton">Save</div>
+                    <div class="content" id="DeleteButton">Delete</div>
                 </div>
             </div>
         </form>
         <div class="gallery" style="width: 600px;">
+            <div class="select-button-div" >
+                <div class="select-button">
+                    Select
+                </div>
+            </div>
             <div class="file-grid">
                 @foreach (var file in Model)
                 {

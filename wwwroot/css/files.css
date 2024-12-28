@@ -13,6 +13,7 @@
     padding: 10px;
 }
 .file-item {
+    position: relative;
     text-align: center;
     border: 1px solid #ccc; 
     padding: 10px; 
@@ -26,6 +27,16 @@
 .file-item:hover{
     cursor: pointer;
     background-color: rgba(249, 249, 249, 0.3);
+}
+.indicator{
+    width: 15px;
+    height: 15px;
+    background-color: rgb(102, 219, 102);
+    position: absolute;
+    left: 82%;
+    top: 8%;
+    border-radius: 10px;
+    border:2.5px solid white;
 }
 
 .expandableMenu{
@@ -99,4 +110,19 @@
     max-width: 100%; 
     max-height: 100%;
     vertical-align:bottom;
+}
+
+.select-button-div{
+    display: flex;
+    justify-content: end;
+    flex-direction: row;
+}
+.select-button{
+    border: 1px solid #ccc; 
+    padding: 5px;
+    background-color: rgba(249, 249, 249, 0.3);
+    transition: background-color 0.1s;
+}
+.select-button:hover{
+    cursor: pointer;
 }

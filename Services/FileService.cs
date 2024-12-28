@@ -1,9 +1,6 @@
 using PullAt.Interfaces;
 using PullAt.Models;
 using FileInfo = PullAt.Models.FileInfo;
-using System.IO;
-using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace PullAt.Services
 {
@@ -35,66 +32,76 @@ namespace PullAt.Services
                 }
                 files = files.OrderBy(image => image.DateTime).ToList();
             }
-            catch(Exception ex){
-                Console.WriteLine($"Message: {ex.Message}");
-            }
+            catch{}
             return files;
         }
         public async Task<Result> UploadFileAsync(IFormFile file)
         {
-            if (file == null || file.Length == 0)
-            {
-                return Result.Failure("No file is selected.");
-            }
-            var extension = Path.GetExtension(file.FileName).ToLower();
-            if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-            {
-                return Result.Failure("The uploaded file must be jpg or png.");
-            }
-            var username = _httpContextAccessor.HttpContext?.User.Identity?.Name;
-            var _userFolder = Path.Combine(_usersFolder,username);
+            try{
+                if (file == null || file.Length == 0)
+                {
+                    return Result.Failure("No file is selected.");
+                }
+                var extension = Path.GetExtension(file.FileName).ToLower();
+                if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                {
+                    return Result.Failure("The uploaded file must be jpg or png.");
+                }
+                var username = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+                var _userFolder = Path.Combine(_usersFolder,username);
 
-            var filePath = CreateFilePath(_userFolder,file.FileName,extension);
-            await SaveFile(file,filePath);
+                var filePath = PathService.CreateFilePath(_userFolder,file.FileName,extension);
+                await SaveFileAsync(file,filePath);
 
-            return Result.Success();
-        }
-        public static string CreateFilePath(string directoryPath,string fileName,string extension){
-            var filePath = Path.Combine(directoryPath,fileName);
-            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            int suffix = 1;
-            while (File.Exists(filePath))
-            {
-                filePath = Path.Combine(directoryPath, $"{fileNameWithoutExtension}_{suffix}{extension}");
-                suffix++;
+                return Result.Success();
             }
-            return filePath;
+            catch (Exception ex){
+                return Result.Failure(ex.Message);
+            }
         }
-        private async Task SaveFile(IFormFile file,string filePath){
+        private async Task SaveFileAsync(IFormFile file,string filePath){
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
         }
-
+        public Task<Result> DeleteFileAsync(string filename,string username){
+            try{
+                var folderPath = Path.Combine(_usersFolder,username);
+                var imagePath = Path.Combine(folderPath, filename);
+                if (!File.Exists(imagePath))
+                    return null;
+                
+                File.Delete(imagePath);
+                return Task.FromResult(Result.Success());
+            }
+            catch(Exception ex){
+                return Task.FromResult(Result.Failure(ex));
+            }
+        }
         public async Task<object> DownloadFileAsync(string filename,string username)
         {
-            var folderPath = Path.Combine(_usersFolder,username);
-            var imagePath = Path.Combine(folderPath, filename);
-            
-            if (!System.IO.File.Exists(imagePath))
-                return null;
+            try{
+                var folderPath = Path.Combine(_usersFolder,username);
+                var imagePath = Path.Combine(folderPath, filename);
+                
+                if (!File.Exists(imagePath))
+                    return null;
 
-            var extension = Path.GetExtension(imagePath).ToLower();
-            string contentType = extension switch 
-            {
-                ".jpg" => "image/jpeg",
-                ".jpeg" => "image/jpeg",
-                ".png" => "image/png",
-                _ => "application/octet-stream"
-            };
-            var fileBytes = System.IO.File.ReadAllBytes(imagePath);
-            return new { fileBytes, contentType };
+                var extension = Path.GetExtension(imagePath).ToLower();
+                string contentType = extension switch 
+                {
+                    ".jpg" => "image/jpeg",
+                    ".jpeg" => "image/jpeg",
+                    ".png" => "image/png",
+                    _ => "application/octet-stream"
+                };
+                var fileBytes = System.IO.File.ReadAllBytes(imagePath);
+                return new { fileBytes, contentType };
+            }
+            catch (Exception ex){
+                return Result.Failure(ex);
+            }
         }
     }
 }

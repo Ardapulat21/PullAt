@@ -85,6 +85,12 @@ let displayImage = (event) => {
     const clickedImg = event.target.closest('.file-item');
     if (clickedImg) {
         const childImage = clickedImg.querySelector('.gallery-item');
+        const imageName = childImage.getAttribute('name');
+        if(selectionMode){
+            addIfNotExist(selectedImages,imageName);
+            console.log(selectedImages);
+            return;
+        }
         const imagePath = childImage.getAttribute('src');
         imageOverlay.src = imagePath;
         filename = childImage.getAttribute('name');
@@ -100,15 +106,55 @@ const overlayTitle = document.querySelector('.overlay-title');
 const fileGrid = document.querySelector('.file-grid');
 fileGrid.addEventListener('click',displayImage);
 
+let selectImage = (event) => {
+    if(!selectionMode)
+        return;
+
+    const clickedImg = event.target.closest('.file-item');
+    if(clickedImg){
+        const indicator = document.createElement('div');
+        indicator.classList.add('indicator');
+
+        const indicatorElement = clickedImg.querySelector(".indicator");
+
+        if(indicatorElement){
+            clickedImg.removeChild(indicatorElement);
+        }
+        else{
+            clickedImg.appendChild(indicator);
+        }
+    }
+};
+
+fileGrid.addEventListener('click',selectImage);
+
 const imageContainer = document.getElementById('imageContainer');
 imageContainer.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
 //#endregion Overlay
 //#region Buttons
-let selectButton = () => {
-    alert("hr");
+var selectedImages = new Array();
+let selectionMode = false;
+let select = () => {
+    if(selectionMode){
+        selectedImages = [];
+        selectButton.style.backgroundColor = "rgba(249, 249, 249, 0.3)";
+
+        const elements = document.querySelectorAll(`.indicator`);
+        elements.forEach(element => {
+            element.parentNode.removeChild(element);
+        });
+        console.log(elements);
+    }
+    else{
+        selectButton.style.backgroundColor = "rgba(249, 249, 249, 1)";
+    }
+    selectionMode = !selectionMode;
 }
+
+const selectButton = document.querySelector(".select-button");
+selectButton.addEventListener('click',select);
 
 let download = () => {
     fetch(`/File/DownloadFile/${filename}`)
@@ -132,4 +178,37 @@ const exitButton = document.getElementById('exitButton');
 exitButton.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
+
+
+
+// let deleteImage = () => {
+//     selectedImages.forEach((image) => {
+//         getRequest(`/File/DeleteFileAsync/${image}`,(data) => {
+//             console.log(`${data}`);
+//         });
+//     })
+// };
+// const deleteButton = document.getElementById('deleteButton');
+// deleteButton.addEventListener('click',deleteImage);
 //#endregion 
+
+
+//#region COMMON
+
+let removeElementFromArray = (array,val) => {
+    const index = array.indexOf(val);
+    if(index > -1){
+        array.splice(index,1);
+    }
+}
+
+let addIfNotExist = (array,val) => {
+    if(!array.includes(val)){
+        array.push(val);
+    }
+    else{
+        removeElementFromArray(array,val);
+    }
+}
+
+//#endregion

@@ -59,9 +59,10 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.HttpOnly = true; // Prevent JavaScript access to cookies
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Enforce HTTPS
     options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
-    options.LoginPath = "/User/Login"; 
     options.Cookie.SameSite = SameSiteMode.Strict; 
+    options.LoginPath = "/User/Login"; 
     options.LogoutPath = "/User/Logout"; 
+    options.AccessDeniedPath = "/User/Login";
 }   
 );
 
@@ -84,10 +85,13 @@ app.UseSession();
 app.Use(async (context, next) =>
 {
     var token = context.Session.GetString("Token");
-    if (!string.IsNullOrEmpty(token))
+    if (!string.IsNullOrEmpty(token)){
         context.Request.Headers.Add("Authorization", "Bearer " + token);
-        
+    }
     await next();
+    if (context.Response.StatusCode == 401){
+        context.Response.Redirect("/User/Login");
+    }
 });
 
 app.UseAuthentication();
