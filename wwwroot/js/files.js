@@ -40,12 +40,12 @@ fileInput.addEventListener("change",async function (event) {
         await POST(
             "/File/UploadFile",formData)
             .then(GetFiles);
+        event.target.value = '';
     }
 });
 //#endregion
 //#region AJAX
 let GetFiles = () => {
-    const fileGrid = document.querySelector(".file-grid");
     fileGrid.innerHTML = ""; 
     $.ajax({
         type: "GET",
@@ -170,13 +170,26 @@ exitButton.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
 
-let deleteImage = () => {
-    selectedImages.forEach((image) => {
-        GET(`/File/DeleteFileAsync/${image}`);
-    });
-    GetFiles();
+async function deleteImage() {
+    try {
+        selectedImages.map(image => fetch(`/File/DeleteFileAsync/${image}`));
+        await GetFiles();
+    } catch (error) {
+        console.error('Error fetching URLs:', error.message);
+    }
 };
 
-const deleteButton = document.getElementById('DeleteButton');
+async function saveImage() {
+    try {
+        selectedImages.map(image => fetch(`/File/DownloadFile/${image}`));
+        await GetFiles();
+    } catch (error) {
+        console.error('Error fetching URLs:', error.message);
+    }
+}
+const deleteButton = document.getElementById('deleteButton');
 deleteButton.addEventListener('click',deleteImage);
+
+const saveButton = document.getElementById('saveButton');
+saveButton.addEventListener('click',saveImage);
 //#endregion 
