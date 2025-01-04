@@ -1,4 +1,4 @@
-import { GET, POST} from "./Api/api.js";
+import { GET, POST , AJAX } from "./Api/api.js";
 import { addIfNotExist} from "./Utils/Utils.js";
 
 //#region Expandable Button
@@ -45,30 +45,25 @@ fileInput.addEventListener("change",async function (event) {
 });
 //#endregion
 //#region AJAX
-let GetFiles = () => {
-    fileGrid.innerHTML = ""; 
-    $.ajax({
-        type: "GET",
-        url: "/File/GetFiles",
-        dataType: "json",
-        success: (response) => {
-            Object.keys(response).forEach(key => {
-                var file = response[key];
-                const fileItem = document.createElement("div");
-                fileItem.classList.add("file-item");
-                
-                const img = document.createElement("img");
-                img.name = file.filename;
-                img.src = file.filePath;
-                img.classList.add("gallery-item");
 
-                fileItem.appendChild(img);
-                fileGrid.appendChild(fileItem);
-            });
-        },
-        error: (xhr,status,error) => {
-            console.log(error);
-        }
+let GetFiles = () => {
+    const fileGrid = document.querySelector(".file-grid");
+    fileGrid.innerHTML = ""; 
+    AJAX('/File/GetFiles','GET',null,(response) => {
+        const json = response.response;
+        let obj = JSON.parse(json);
+        obj.forEach(file =>{
+            const fileItem = document.createElement("div");
+            fileItem.classList.add("file-item");
+
+            const img = document.createElement("img");
+            img.name = file.filename;
+            img.src = file.filePath;
+            img.classList.add("gallery-item");
+
+            fileItem.appendChild(img);
+            fileGrid.appendChild(fileItem);
+        })
     });
 }
 //#endregion AJAX
@@ -170,10 +165,11 @@ exitButton.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
 
-async function deleteImage() {
+function deleteImage() {
     try {
         selectedImages.map(image => fetch(`/File/DeleteFileAsync/${image}`));
-        await GetFiles();
+        GetFiles();
+
     } catch (error) {
         console.error('Error fetching URLs:', error.message);
     }
@@ -192,4 +188,8 @@ deleteButton.addEventListener('click',deleteImage);
 
 const saveButton = document.getElementById('saveButton');
 saveButton.addEventListener('click',saveImage);
+
+const refreshButton = document.getElementById('Refresh');
+refreshButton.addEventListener('click',GetFiles);
+
 //#endregion 
