@@ -44,8 +44,14 @@
     max-height: 0px;
     cursor:pointer;
     overflow: hidden;
+    padding: 0px 15px;
     transition:max-height 0.7s ease-out;
 }
+.content.expanded {
+    max-height: 100px; /* Or any large enough value */
+    padding: 5px 15px;
+}
+
 .expandable-menu{
     position: absolute;
     left: 20px;

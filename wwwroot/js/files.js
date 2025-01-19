@@ -9,10 +9,9 @@ button.addEventListener("click",function(){
     icon.classList.contains("bi-caret-down") ? 
     icon.classList.toggle("bi-caret-up") :
     icon.classList.toggle("bi-caret-down");
+
     for(const content of contents){
-        const isExpanded = content.style.maxHeight;
-        content.style.maxHeight = isExpanded ? null : `${content.scrollHeight}px`;
-        content.style.padding = isExpanded ? "0px 15px" : "5px 15px";
+        content.classList.toggle("expanded");
     }
 });
 
