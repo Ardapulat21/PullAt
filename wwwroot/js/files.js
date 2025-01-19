@@ -9,17 +9,10 @@ button.addEventListener("click",function(){
     icon.classList.contains("bi-caret-down") ? 
     icon.classList.toggle("bi-caret-up") :
     icon.classList.toggle("bi-caret-down");
-
-    for(var i = 0;i < contents.length; i++){
-        var content = contents[i];
-        if(content.style.maxHeight){
-            content.style.maxHeight = null;
-            content.style.padding = "0px 15px";
-        }
-        else{
-            content.style.padding = "5px 15px";
-            content.style.maxHeight = content.scrollHeight + "px";
-        }
+    for(const content of contents){
+        const isExpanded = content.style.maxHeight;
+        content.style.maxHeight = isExpanded ? null : `${content.scrollHeight}px`;
+        content.style.padding = isExpanded ? "0px 15px" : "5px 15px";
     }
 });
 
