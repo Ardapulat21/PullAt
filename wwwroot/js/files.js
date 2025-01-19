@@ -6,14 +6,10 @@ var button = document.getElementById("expandable-button");
 var contents = document.getElementsByClassName("content");
 var icon = document.getElementById("icon");
 button.addEventListener("click",function(){
-    if(icon.classList.contains("bi-caret-down")){
-        icon.classList.remove("bi-caret-down");
-        icon.classList.add("bi-caret-up");
-    }
-    else{
-        icon.classList.remove("bi-caret-up");
-        icon.classList.add("bi-caret-down");
-    }
+    icon.classList.contains("bi-caret-down") ? 
+    icon.classList.toggle("bi-caret-up") :
+    icon.classList.toggle("bi-caret-down");
+
     for(var i = 0;i < contents.length; i++){
         var content = contents[i];
         if(content.style.maxHeight){
@@ -30,14 +26,13 @@ button.addEventListener("click",function(){
 const fileInput = document.getElementById("fileInput");
 fileInput.addEventListener("change",async function (event) {
     const file = event.target.files[0];
-    if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        await POST(
-            "/File/UploadFile",formData)
-            .then(GetFiles);
-        event.target.value = '';
-    }
+    if(!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    await POST(
+        "/File/UploadFile",formData)
+        .then(GetFiles);
+    event.target.value = '';
 });
 //#endregion
 let GetFiles = () => {
@@ -96,13 +91,9 @@ let selectImage = (event) => {
         indicator.classList.add('selection-indicator');
 
         const indicatorElement = clickedImg.querySelector(".selection-indicator");
-
-        if(indicatorElement){
-            clickedImg.removeChild(indicatorElement);
-        }
-        else{
-            clickedImg.appendChild(indicator);
-        }
+        indicatorElement 
+        ? clickedImg.removeChild(indicatorElement) 
+        : clickedImg.appendChild(indicator);
     }
 };
 
