@@ -28,7 +28,7 @@
     cursor: pointer;
     background-color: rgba(249, 249, 249, 0.3);
 }
-.indicator{
+.selection-indicator{
     width: 15px;
     height: 15px;
     background-color: rgb(102, 219, 102);

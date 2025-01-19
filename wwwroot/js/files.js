@@ -44,8 +44,6 @@ fileInput.addEventListener("change",async function (event) {
     }
 });
 //#endregion
-//#region AJAX
-
 let GetFiles = () => {
     const fileGrid = document.querySelector(".file-grid");
     fileGrid.innerHTML = ""; 
@@ -99,9 +97,9 @@ let selectImage = (event) => {
     const clickedImg = event.target.closest('.file-item');
     if(clickedImg){
         const indicator = document.createElement('div');
-        indicator.classList.add('indicator');
+        indicator.classList.add('selection-indicator');
 
-        const indicatorElement = clickedImg.querySelector(".indicator");
+        const indicatorElement = clickedImg.querySelector(".selection-indicator");
 
         if(indicatorElement){
             clickedImg.removeChild(indicatorElement);
@@ -127,7 +125,7 @@ let select = () => {
         selectedImages = [];
         selectButton.style.backgroundColor = "rgba(249, 249, 249, 0.3)";
 
-        const elements = document.querySelectorAll(`.indicator`);
+        const elements = document.querySelectorAll(`.selection-indicator`);
         elements.forEach(element => {
             element.parentNode.removeChild(element);
         });
