@@ -38,12 +38,6 @@
     border-radius: 10px;
     border:2.5px solid white;
 }
-
-.expandableMenu{
-    position: absolute;
-    left: 20px;
-    top: 50px;
-}
 .content{
     background-color: rgb(171, 215, 247);
     width: 100px;
@@ -52,10 +46,15 @@
     overflow: hidden;
     transition:max-height 0.7s ease-out;
 }
-#expandableButton:hover, .content:hover{
+.expandable-menu{
+    position: absolute;
+    left: 20px;
+    top: 50px;
+}
+#expandable-button:hover, .content:hover{
     opacity: 0.7;
 }
-#expandableButton{
+#expandable-button{
     display: grid;
     place-items: center;
     background-color: rgb(171, 215, 247);
@@ -66,12 +65,11 @@
     border:1px solid black;
     cursor:pointer;
 }
-.expandableItems{
+.expandable-items{
     display: flex;
     border-width: 1px;
     flex-direction: column;
 }
-
 .overlay-container{
     position:absolute;
     top: 50%; 

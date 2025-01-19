@@ -2,7 +2,7 @@ import { GET, POST , AJAX } from "./Api/api.js";
 import { addIfNotExist} from "./Utils/Utils.js";
 
 //#region Expandable Button
-var button = document.getElementById("expandableButton");
+var button = document.getElementById("expandable-button");
 var contents = document.getElementsByClassName("content");
 var icon = document.getElementById("icon");
 button.addEventListener("click",function(){
@@ -14,19 +14,15 @@ button.addEventListener("click",function(){
         icon.classList.remove("bi-caret-up");
         icon.classList.add("bi-caret-down");
     }
-
     for(var i = 0;i < contents.length; i++){
         var content = contents[i];
         if(content.style.maxHeight){
             content.style.maxHeight = null;
-            expandableButton.style.borderRadius = "30px";
             content.style.padding = "0px 15px";
         }
         else{
-            expandableButton.style.borderRadius = "0px";
             content.style.padding = "5px 15px";
             content.style.maxHeight = content.scrollHeight + "px";
-            content.style.borderWidth = "1px";
         }
     }
 });
@@ -180,14 +176,14 @@ async function saveImage() {
     } catch (error) {
         console.error('Error fetching URLs:', error.message);
     }
-}
-const deleteButton = document.getElementById('deleteButton');
-deleteButton.addEventListener('click',deleteImage);
+};
+// const deleteButton = document.getElementById('deleteButton');
+// deleteButton.addEventListener('click',deleteImage);
 
-const saveButton = document.getElementById('saveButton');
-saveButton.addEventListener('click',saveImage);
+// const saveButton = document.getElementById('saveButton');
+// saveButton.addEventListener('click',saveImage);
 
-const refreshButton = document.getElementById('Refresh');
-refreshButton.addEventListener('click',GetFiles);
+// const refreshButton = document.getElementById('Refresh');
+// refreshButton.addEventListener('click',GetFiles);
 
 //#endregion 
