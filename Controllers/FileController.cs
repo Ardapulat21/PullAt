@@ -21,7 +21,7 @@ namespace PullAt.Controllers
         {
             try{
                 var result = await _fileService.UploadFileAsync(file);
-                return result.IsSuccess ? RedirectToAction("Files") : BadRequest(result.Message);
+                return result.IsSuccess ? Ok("File uploaded successfully") : BadRequest(result.Message);
             }
             catch(Exception ex){
                 return BadRequest(ex.Message);
