@@ -1,7 +1,7 @@
-import { GET, POST, AJAX } from "./Api/api.js";
+import { GET, POST, AJAX } from "./api.js";
 import { toggleMenu, select, setOverlayImage } from "./dom.js";
 import { download, refreshGallery} from "./filehandler.js";
-import { addIfNotExist } from "./Utils/Utils.js";
+import { addIfNotExist } from "./Utils.js";
 
 var button = document.getElementById("expandable-button");
 button.addEventListener("click",toggleMenu);

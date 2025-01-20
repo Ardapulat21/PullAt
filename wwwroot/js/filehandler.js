@@ -1,5 +1,5 @@
 import { appendImageElement } from "./dom.js";
-import { AJAX } from "./Api/api.js";
+import { AJAX } from "./api.js";
 
 let download = (filename) => {
     fetch(`/File/DownloadFile/${filename}`)
