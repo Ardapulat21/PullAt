@@ -16,7 +16,6 @@ namespace PullAt.Services
         }
         public async Task<List<User>?> GetUsers(){
             var url = Path.Combine(_apiUrl,"GetAllUsers");
-            
             var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {

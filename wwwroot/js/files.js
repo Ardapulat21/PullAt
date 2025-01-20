@@ -1,3 +1,6 @@
+import { GET, POST , AJAX } from "./Api/api.js";
+import { addIfNotExist} from "./Utils/Utils.js";
+
 //#region Expandable Button
 var button = document.getElementById("expandableButton");
 var contents = document.getElementsByClassName("content");
@@ -11,6 +14,7 @@ button.addEventListener("click",function(){
         icon.classList.remove("bi-caret-up");
         icon.classList.add("bi-caret-down");
     }
+
     for(var i = 0;i < contents.length; i++){
         var content = contents[i];
         if(content.style.maxHeight){
@@ -26,57 +30,40 @@ button.addEventListener("click",function(){
         }
     }
 });
+
 const fileInput = document.getElementById("fileInput");
-fileInput.addEventListener("change", function (event) {
+fileInput.addEventListener("change",async function (event) {
     const file = event.target.files[0];
     if (file) {
         const formData = new FormData();
         formData.append("file", file);
-        fetch("/File/UploadFile", {
-            method: "POST", 
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log("File uploaded successfully.");
-                GetFiles();
-            } else {
-                console.log("File upload failed.");
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            console.log("An error occurred while uploading the file.");
-        });
+        await POST(
+            "/File/UploadFile",formData)
+            .then(GetFiles);
+        event.target.value = '';
     }
 });
 //#endregion
 //#region AJAX
+
 let GetFiles = () => {
     const fileGrid = document.querySelector(".file-grid");
     fileGrid.innerHTML = ""; 
-    $.ajax({
-        type: "GET",
-        url: "/File/GetFiles",
-        dataType: "json",
-        success: (response) => {
-            Object.keys(response).forEach(key => {
-                var file = response[key];
-                const fileItem = document.createElement("div");
-                fileItem.classList.add("file-item");
-                
-                const img = document.createElement("img");
-                img.name = file.filename;
-                img.src = file.filePath;
-                img.classList.add("gallery-item");
+    AJAX('/File/GetFiles','GET',null,(response) => {
+        const json = response.response;
+        let obj = JSON.parse(json);
+        obj.forEach(file =>{
+            const fileItem = document.createElement("div");
+            fileItem.classList.add("file-item");
 
-                fileItem.appendChild(img);
-                fileGrid.appendChild(fileItem);
-            });
-        },
-        error: (xhr,status,error) => {
-            console.log(error);
-        }
+            const img = document.createElement("img");
+            img.name = file.filename;
+            img.src = file.filePath;
+            img.classList.add("gallery-item");
+
+            fileItem.appendChild(img);
+            fileGrid.appendChild(fileItem);
+        })
     });
 }
 //#endregion AJAX
@@ -85,6 +72,11 @@ let displayImage = (event) => {
     const clickedImg = event.target.closest('.file-item');
     if (clickedImg) {
         const childImage = clickedImg.querySelector('.gallery-item');
+        const imageName = childImage.getAttribute('name');
+        if(selectionMode){
+            addIfNotExist(selectedImages,imageName);
+            return;
+        }
         const imagePath = childImage.getAttribute('src');
         imageOverlay.src = imagePath;
         filename = childImage.getAttribute('name');
@@ -100,15 +92,55 @@ const overlayTitle = document.querySelector('.overlay-title');
 const fileGrid = document.querySelector('.file-grid');
 fileGrid.addEventListener('click',displayImage);
 
+let selectImage = (event) => {
+    if(!selectionMode)
+        return;
+
+    const clickedImg = event.target.closest('.file-item');
+    if(clickedImg){
+        const indicator = document.createElement('div');
+        indicator.classList.add('indicator');
+
+        const indicatorElement = clickedImg.querySelector(".indicator");
+
+        if(indicatorElement){
+            clickedImg.removeChild(indicatorElement);
+        }
+        else{
+            clickedImg.appendChild(indicator);
+        }
+    }
+};
+
+fileGrid.addEventListener('click',selectImage);
+
 const imageContainer = document.getElementById('imageContainer');
 imageContainer.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
 //#endregion Overlay
 //#region Buttons
-let selectButton = () => {
-    alert("hr");
+var selectedImages = new Array();
+let selectionMode = false;
+let select = () => {
+    if(selectionMode){
+        selectedImages = [];
+        selectButton.style.backgroundColor = "rgba(249, 249, 249, 0.3)";
+
+        const elements = document.querySelectorAll(`.indicator`);
+        elements.forEach(element => {
+            element.parentNode.removeChild(element);
+        });
+        console.log(elements);
+    }
+    else{
+        selectButton.style.backgroundColor = "rgba(249, 249, 249, 1)";
+    }
+    selectionMode = !selectionMode;
 }
+
+const selectButton = document.querySelector(".select-button");
+selectButton.addEventListener('click',select);
 
 let download = () => {
     fetch(`/File/DownloadFile/${filename}`)
@@ -132,4 +164,32 @@ const exitButton = document.getElementById('exitButton');
 exitButton.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
+
+function deleteImage() {
+    try {
+        selectedImages.map(image => fetch(`/File/DeleteFileAsync/${image}`));
+        GetFiles();
+
+    } catch (error) {
+        console.error('Error fetching URLs:', error.message);
+    }
+};
+
+async function saveImage() {
+    try {
+        selectedImages.map(image => fetch(`/File/DownloadFile/${image}`));
+        await GetFiles();
+    } catch (error) {
+        console.error('Error fetching URLs:', error.message);
+    }
+}
+const deleteButton = document.getElementById('deleteButton');
+deleteButton.addEventListener('click',deleteImage);
+
+const saveButton = document.getElementById('saveButton');
+saveButton.addEventListener('click',saveImage);
+
+const refreshButton = document.getElementById('Refresh');
+refreshButton.addEventListener('click',GetFiles);
+
 //#endregion 

@@ -27,16 +27,6 @@ namespace PullAt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("DownloadFile/{filename}")]
-        public async Task<IActionResult> DownloadFile(string filename){
-            try{
-                var data = await (dynamic)_fileService.DownloadFileAsync(filename,User.Identity.Name);
-                return File(data.fileBytes, data.contentType, filename);
-            }
-            catch (Exception ex){
-                return BadRequest(ex.Message);
-            }
-        }
         [HttpGet("Files")]
         public async Task<IActionResult> Files()
         {
@@ -65,10 +55,28 @@ namespace PullAt.Controllers
             }
         }
         public List<FileInfo?> FetchFiles(){
-            var fileInfos = new List<FileInfo?>();
-            fileInfos = _fileService.GetFiles(User.Identity.Name);
+            List<FileInfo?> fileInfos = new List<FileInfo?>();
+            fileInfos = _fileService.GetFiles(User.Identity?.Name);
             fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
             return fileInfos;
+        }
+        [HttpGet("DeleteFileAsync/{filename}")]
+        public async Task<IActionResult> DeleteFileAsync(string filename){
+            var result = await _fileService.DeleteFileAsync(filename, User.Identity?.Name);
+            if(result.IsSuccess){
+                return Ok("Media has been deleted");
+            }
+            return BadRequest(result.Message);
+        }
+        [HttpGet("DownloadFile/{filename}")]
+        public async Task<IActionResult> DownloadFile(string filename){
+            try{
+                var data = await (dynamic)_fileService.DownloadFileAsync(filename,User.Identity.Name);
+                return File(data.fileBytes, data.contentType, filename);
+            }
+            catch (Exception ex){
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
