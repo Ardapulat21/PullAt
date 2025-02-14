@@ -46,6 +46,9 @@ namespace PullAt.Controllers
         public IActionResult GetImage(string filePath)
         {
             try{
+                if(!System.IO.File.Exists(filePath)){
+                    return BadRequest("File is not absent at the provided file path");
+                }
                 var fileBytes = System.IO.File.ReadAllBytes(filePath);
                 var contentType = "image/jpeg";
                 return File(fileBytes, contentType);
@@ -62,21 +65,36 @@ namespace PullAt.Controllers
         }
         [HttpGet("DeleteFileAsync/{filename}")]
         public async Task<IActionResult> DeleteFileAsync(string filename){
-            var result = await _fileService.DeleteFileAsync(filename, User.Identity?.Name);
-            if(result.IsSuccess){
-                return Ok("Media has been deleted");
+            try{
+                if(String.IsNullOrEmpty(filename))
+                    return BadRequest("File name is null.");
+
+                var result = await _fileService.DeleteFileAsync(filename, User.Identity?.Name);
+                if(result.IsSuccess)
+                    return Ok("Media has been deleted");
+
+                return BadRequest(result.Message);
+            }catch(Exception e){
+                return BadRequest(e.Message);
             }
-            return BadRequest(result.Message);
+            
         }
         [HttpGet("DownloadFile/{filename}")]
         public async Task<IActionResult> DownloadFile(string filename){
             try{
+                if(String.IsNullOrEmpty(filename))
+                    return BadRequest("File name is null.");
+                
                 var data = await (dynamic)_fileService.DownloadFileAsync(filename,User.Identity.Name);
                 return File(data.fileBytes, data.contentType, filename);
             }
             catch (Exception ex){
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpGet("DisplayMessage/{message}")]
+        public async Task<IActionResult> DisplayMessage(string message){
+            return Content(message);
         }
     }
 }
