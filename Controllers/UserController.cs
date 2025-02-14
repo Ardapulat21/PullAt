@@ -17,16 +17,6 @@ namespace PullAt.Controllers
             _userService = userService;
             _httpClient = httpClient;
         }
-        [Authorize]
-        public async Task<IActionResult> UserList()
-        {
-            ViewBag.Message = User.Identity.IsAuthenticated ? "Authenticated" : "Unauthenticated";
-            var users = await _userService.GetUsers();
-            if(users == null)
-                return Unauthorized();
-
-            return View(users);
-        }
         public async Task<IActionResult> Register()
         {
             return View();
@@ -37,10 +27,6 @@ namespace PullAt.Controllers
                 return RedirectToAction("Index","Home");
             }
             return View();
-        }
-        public async Task<IActionResult> Delete(int id){
-            await _userService.Delete(id);
-            return RedirectToAction(nameof(UserList));
         }
         public async Task<IActionResult> Logout(){
             HttpContext.Session.Clear();
@@ -57,7 +43,7 @@ namespace PullAt.Controllers
                 ModelState.AddModelError("", "Username or Email already exists.");
                 return View(user); 
             }
-            return RedirectToAction(nameof(UserList));
+            return RedirectToAction("Files","File");
         }
         [HttpPost]
         public async Task<IActionResult> Login(User user)   
