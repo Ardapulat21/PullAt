@@ -24,7 +24,7 @@ namespace PullAt.Controllers
         public async Task<IActionResult> Login()
         {
             if(User.Identity.IsAuthenticated){
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Files","File");
             }
             return View();
         }
@@ -45,7 +45,7 @@ namespace PullAt.Controllers
             }
             return RedirectToAction("Files","File");
         }
-        [HttpPost]
+        [HttpPost]  
         public async Task<IActionResult> Login(User user)   
         {
             var token = await _userService.Login(user); 

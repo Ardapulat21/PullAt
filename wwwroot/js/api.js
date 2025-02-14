@@ -1,15 +1,3 @@
-async function GET(url) {
-    await fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response;
-        })
-        .catch(error => {
-            console.log(`There was a problem with the fetch operation: ${error}`);
-        });
-};
 async function POST(url,data) {
     await fetch(url, {
             method: "POST", 
@@ -44,4 +32,4 @@ function AJAX(url, method, data, callback) {
     xhr.send(data);
 }
 
-export { GET, POST, AJAX };
+export { POST, AJAX };

@@ -18,9 +18,10 @@ body {
     background-size: cover; 
     background-position: center; 
     background-attachment: fixed;
-    height: 100vh;
+    max-height: 100vh;
     font-weight: 200;
     font-family: "Roboto Flex", sans-serif;
+    overflow-x: hidden;
 }
 a {
     text-decoration: none;
@@ -70,7 +71,7 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(249, 249, 249, 0.2);
+  background-color: rgb(52, 57, 100);
   padding:0;
 }
 .input{

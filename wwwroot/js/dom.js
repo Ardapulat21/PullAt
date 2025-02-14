@@ -30,7 +30,7 @@ let setOverlayImage = (imagePath,imageName) => {
     imageOverlay.src = imagePath;
     overlayTitle.textContent =  imageName;
     overlayContainer.style.display = 'block';
-}
+};
 
 let appendImageElement = (fileGrid,file) => {
     const fileItem = document.createElement("div");
@@ -43,7 +43,7 @@ let appendImageElement = (fileGrid,file) => {
 
     fileItem.appendChild(img);
     fileGrid.appendChild(fileItem);
-}
+};
 
 let displayImage = (event,selectionData) => {
     const clickedImg = event.target.closest('.file-item');
@@ -61,7 +61,6 @@ let displayImage = (event,selectionData) => {
 };
 
 let selectImage = (event,selectionData) => {
-    console.log(`data: ${selectionData} mode: ${selectionData.mode}`);
     if(!selectionData.mode) return;
     
     const clickedImg = event.target.closest('.file-item');
@@ -73,7 +72,6 @@ let selectImage = (event,selectionData) => {
 const selectButton = document.querySelector(".select-button");
 
 let selectionModeToggle = (selectionData) => {
-    console.log(`selection data:  ${selectionData} mode: ${selectionData.mode}`);
     if(selectionData.mode){
         selectionData.images = [];
         selectButton.style.backgroundColor = "rgba(249, 249, 249, 0.3)";
