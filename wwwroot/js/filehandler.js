@@ -1,5 +1,5 @@
 import { appendImageElement } from "./dom.js";
-import { AJAX } from "./api.js";
+import { POST ,AJAX } from "./api.js";
 
 let download = (filename) => {
     fetch(`/File/DownloadFile/${filename}`)
@@ -17,16 +17,33 @@ let download = (filename) => {
     .catch(err => console.error('Error downloading file:', err));
 };
 
-let refreshGallery = () => {
-    const fileGrid = document.querySelector(".file-grid");
-    fileGrid.innerHTML = ""; 
-    AJAX('/File/GetFiles','GET',null,(response) => {
-        const json = response.response;
-        let obj = JSON.parse(json);
-        obj.forEach(file => {
-            appendImageElement(fileGrid,file);
-        });
-    });
+let uploadFile = async (event) => {
+    const file = event.target.files[0];
+    if(!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    await POST(
+        "/File/UploadFile",formData)
+        .then(refreshGallery);
+    event.target.value = '';
 }
 
-export {download ,refreshGallery };
+const fileGrid = document.querySelector(".file-grid");
+async function clearGallery() {
+    fileGrid.innerHTML = ""; 
+}
+
+async function refreshGallery() {
+    await clearGallery();
+    await fetch('/File/GetFiles')
+    .then(response => response.json())
+    .then(data => {
+        data.map(item => {
+            appendImageElement(fileGrid,item);
+        })
+    })
+    .catch(error => console.log(error));
+}
+
+export {download ,uploadFile ,refreshGallery};

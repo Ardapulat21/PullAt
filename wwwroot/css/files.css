@@ -1,5 +1,11 @@
+.gallery-layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+}
 .gallery{
-    width: 500px;
+    display: inline-block;
     background-color: rgba(249, 249, 249, 0.6);
     padding:50px;
     overflow-y: auto;
@@ -8,7 +14,7 @@
 }
 .file-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(150px, 1fr)); 
+    grid-template-columns: repeat(3, minmax(50px, 120px)); 
     gap: 10px; 
     padding: 10px;
 }
@@ -39,7 +45,7 @@
     border:2.5px solid white;
 }
 .content{
-    background-color: rgb(171, 215, 247);
+    background-color: rgb(52, 57, 100);
     width: 100px;
     max-height: 0px;
     cursor:pointer;
@@ -63,7 +69,7 @@
 #expandable-button{
     display: grid;
     place-items: center;
-    background-color: rgb(171, 215, 247);
+    background-color: rgb(52, 57, 100);
     width: 50px;
     height: 50px;
     border-radius: 30px;
@@ -87,6 +93,7 @@
     transform: translate(-50%, -50%);
 }
 .header-overlay{
+    color:black;
     background-color: rgba(249, 249, 249);
     display: flex;
     flex-direction: row;
@@ -126,7 +133,8 @@
     border: 1px solid #ccc; 
     padding: 5px;
     background-color: rgba(249, 249, 249, 0.3);
-    transition: background-color 0.1s;
+    transition: color 0.1s;
+    color:black;
 }
 .select-button:hover{
     cursor: pointer;

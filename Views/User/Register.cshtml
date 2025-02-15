@@ -14,12 +14,12 @@
                     <input asp-for="Username" type="text" id="username" name="Username" required>
                 </div>
                 <div class="input">
-                    <label for="password">Password </label>
-                    <input asp-for="Password" type="Password" id="Password" name="Password" style="margin-left:3px" required>
-                </div>
-                <div class="input">
                     <label for="email">Email </label>
                     <input asp-for="Email" type="email" id="email" name="Email" style="margin-left:33px" required>
+                </div>
+                <div class="input">
+                    <label for="password">Password </label>
+                    <input asp-for="Password" type="Password" id="password" name="Password" style="margin-left:3px" required>
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" id="showPassword" />
@@ -33,9 +33,16 @@
                     @Html.ValidationSummary(true, "", new { @style = "margin-left:55px;text-align:left;color:red"})
                 </div>
                 <div style="margin-top:10px;margin-left:40px">
-                    <input type="submit" value="Register" class="btn btn-outline-primary" style="width:120px" />
+                    <input type="submit" value="Register" class="customized-button" style="width:120px" />
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        const passwordField = document.getElementById('password');
+        const showPassword = document.getElementById('showPassword');
+        showPassword.addEventListener('change', function() {
+            passwordField.type = this.checked ? 'text' : 'password';
+        });
+    </script>
 }

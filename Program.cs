@@ -93,11 +93,9 @@ app.Use(async (context, next) =>
         context.Response.Redirect("/User/Login");
     }
 });
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=User}/{action=Login}/{id?}");
-
 app.Run();
