@@ -1,6 +1,5 @@
+import { POST } from "./api.js";
 import { appendImageElement } from "./dom.js";
-import { POST ,AJAX } from "./api.js";
-
 let download = (filename) => {
     fetch(`/File/DownloadFile/${filename}`)
     .then(response => response.blob())
@@ -25,20 +24,25 @@ let uploadFile = async (event) => {
     formData.append("file", file);
     await POST(
         "/File/UploadFile",formData)
-        .then(refreshGallery);
+        .then(refresh);
     event.target.value = '';
 }
-
-let refreshGallery = () => {
-    const fileGrid = document.querySelector(".file-grid");
-    fileGrid.innerHTML = ""; 
-    AJAX('/File/GetFiles','GET',null,(response) => {
-        const json = response.response;
-        let obj = JSON.parse(json);
-        obj.forEach(file => {
-            appendImageElement(fileGrid,file);
+const fileGrid = document.getElementById('file-grid');
+const refresh = () => {
+    fetch('/File/GetFiles')
+    .then(response => response.json())
+    .then(data => {
+        const fileGrid = document.querySelector(".file-grid");
+        fileGrid.innerHTML = "";
+        data.forEach(item => {
+            console.log(item);
+            appendImageElement(fileGrid,item);
+            // const fileItem = document.createElement('div');
+            // fileItem.className = "file-item";
+            // fileItem.innerHTML = `<img class="gallery-item" name="${item.filename}" src="${item.filePath}"/>`;
+            // fileGrid.appendChild(fileItem);
         });
     });
 }
 
-export {download ,uploadFile ,refreshGallery};
+export {download ,uploadFile ,refresh };
