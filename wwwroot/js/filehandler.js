@@ -41,7 +41,6 @@ async function refreshGallery() {
     .then(data => {
         data.map(item => {
             appendImageElement(fileGrid,item);
-            console.log(item);
         })
     })
     .catch(error => console.log(error));
