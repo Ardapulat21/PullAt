@@ -1,6 +1,6 @@
 import { GET, POST, AJAX } from "./api.js";
 import { toggleMenu, displayImage, selectImage, selectionModeToggle } from "./dom.js";
-import { download, uploadFile} from "./filehandler.js";
+import { download, refreshGallery, uploadFile} from "./filehandler.js";
 
     const selectionData = {
         filename: '',
@@ -48,4 +48,9 @@ import { download, uploadFile} from "./filehandler.js";
     const exitButton = document.getElementById('exitButton');
     exitButton.addEventListener('click',() => {
         overlayContainer.style.display = 'none';
+    });
+
+    const refreshButton = document.getElementById('refreshButton');
+    refreshButton.addEventListener('click',() =>{
+        refreshGallery();
     });

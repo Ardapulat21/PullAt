@@ -24,7 +24,7 @@ namespace PullAt.Controllers
         public async Task<IActionResult> Login()
         {
             if(User.Identity.IsAuthenticated){
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Files","File");
             }
             return View();
         }

@@ -1,5 +1,11 @@
+.gallery-layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+}
 .gallery{
-    width: 500px;
+    display: inline-block;
     background-color: rgba(249, 249, 249, 0.6);
     padding:50px;
     overflow-y: auto;
@@ -8,7 +14,7 @@
 }
 .file-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(150px, 1fr)); 
+    grid-template-columns: repeat(3, minmax(50px, 120px)); 
     gap: 10px; 
     padding: 10px;
 }
@@ -63,7 +69,7 @@
 #expandable-button{
     display: grid;
     place-items: center;
-    background-color: rgb(171, 215, 247);
+    background-color: rgb(52, 57, 100);
     width: 50px;
     height: 50px;
     border-radius: 30px;

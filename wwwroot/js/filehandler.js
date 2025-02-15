@@ -29,16 +29,22 @@ let uploadFile = async (event) => {
     event.target.value = '';
 }
 
-let refreshGallery = () => {
-    const fileGrid = document.querySelector(".file-grid");
+const fileGrid = document.querySelector(".file-grid");
+async function clearGallery() {
     fileGrid.innerHTML = ""; 
-    AJAX('/File/GetFiles','GET',null,(response) => {
-        const json = response.response;
-        let obj = JSON.parse(json);
-        obj.forEach(file => {
-            appendImageElement(fileGrid,file);
-        });
-    });
+}
+
+async function refreshGallery() {
+    await clearGallery();
+    await fetch('/File/GetFiles')
+    .then(response => response.json())
+    .then(data => {
+        data.map(item => {
+            appendImageElement(fileGrid,item);
+            console.log(item);
+        })
+    })
+    .catch(error => console.log(error));
 }
 
 export {download ,uploadFile ,refreshGallery};
