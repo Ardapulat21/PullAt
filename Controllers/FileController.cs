@@ -27,6 +27,12 @@ namespace PullAt.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        public List<FileInfo?> FetchFiles(){
+            List<FileInfo?> fileInfos = new List<FileInfo?>();
+            fileInfos = _fileService.GetFiles(User.Identity?.Name);
+            fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
+            return fileInfos;
+        }
         [HttpGet("Files")]
         public async Task<IActionResult> Files()
         {
@@ -54,23 +60,27 @@ namespace PullAt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        public List<FileInfo?> FetchFiles(){
-            List<FileInfo?> fileInfos = new List<FileInfo?>();
-            fileInfos = _fileService.GetFiles(User.Identity?.Name);
-            fileInfos.ForEach(file => file.FilePath = Url.Action("GetImage", "File", new { file.FilePath }));
-            return fileInfos;
-        }
         [HttpGet("DeleteFileAsync/{filename}")]
         public async Task<IActionResult> DeleteFileAsync(string filename){
-            var result = await _fileService.DeleteFileAsync(filename, User.Identity?.Name);
-            if(result.IsSuccess){
-                return Ok("Media has been deleted");
+            try{
+                if(String.IsNullOrEmpty(filename))
+                    return BadRequest("File name is null");
+                var result = await _fileService.DeleteFileAsync(filename, User.Identity?.Name);
+                if(result.IsSuccess){
+                    return Ok("Media has been deleted");
+                }
+                return BadRequest(result.Message);
             }
-            return BadRequest(result.Message);
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("DownloadFile/{filename}")]
         public async Task<IActionResult> DownloadFile(string filename){
             try{
+                if(String.IsNullOrEmpty(filename))
+                    return BadRequest("File name is null");
+                Console.WriteLine($"HEY {filename}");
                 var data = await (dynamic)_fileService.DownloadFileAsync(filename,User.Identity.Name);
                 return File(data.fileBytes, data.contentType, filename);
             }

@@ -7,6 +7,7 @@ namespace PullAt.Services
     public class FileService : IFileService
     {
         private readonly string _usersFolder;
+        private string _userFolder;
         private readonly IHttpContextAccessor _httpContextAccessor;
         public FileService(IWebHostEnvironment env,IHttpContextAccessor httpContextAccessor)
         {
@@ -18,11 +19,11 @@ namespace PullAt.Services
             var files = new List<FileInfo>();
             try
             {
-                var folderPath = Path.Combine(_usersFolder,username);
-                if(!Directory.Exists(folderPath)){
+                var _userFolder = Path.Combine(_usersFolder,username);
+                if(!Directory.Exists(_userFolder)){
                     return null;
                 }
-                var filePaths = Directory.GetFiles(folderPath);
+                var filePaths = Directory.GetFiles(_userFolder);
                 foreach (var file in filePaths){
                     files.Add(new Models.FileInfo(){
                         Filename = Path.GetFileName(file),
@@ -67,8 +68,8 @@ namespace PullAt.Services
         }
         public Task<Result> DeleteFileAsync(string filename,string username){
             try{
-                var folderPath = Path.Combine(_usersFolder,username);
-                var imagePath = Path.Combine(folderPath, filename);
+                _userFolder = Path.Combine(_usersFolder,username);
+                var imagePath = Path.Combine(_userFolder, filename);
                 if (!File.Exists(imagePath))
                     return null;
                 
@@ -82,8 +83,8 @@ namespace PullAt.Services
         public async Task<object> DownloadFileAsync(string filename,string username)
         {
             try{
-                var folderPath = Path.Combine(_usersFolder,username);
-                var imagePath = Path.Combine(folderPath, filename);
+                _userFolder = Path.Combine(_usersFolder,username);
+                var imagePath = Path.Combine(_userFolder, filename);
                 
                 if (!File.Exists(imagePath))
                     return null;

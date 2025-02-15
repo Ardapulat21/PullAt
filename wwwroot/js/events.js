@@ -50,11 +50,15 @@ exitButton.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
 
-const deleteFiles = selectionData.images.map(v => {
-    return fetch(`/File/DeleteFileAsync/${v}`)
-    .catch(e => {
-        console.log(e);
-    });
+const saveButton = document.getElementById('saveButton');
+saveButton.addEventListener('click',async () => {
+    try{
+        await Promise.all(selectionData.images.map(async (image) => {
+            await download(image);
+        }));
+    } catch(error){
+        console.log(error);
+    }
 });
 
 const deleteButton = document.getElementById('deleteButton');
@@ -63,19 +67,11 @@ deleteButton.addEventListener('click',async () => {
         await Promise.all(selectionData.images.map(async (image) => {
             await fetch(`DeleteFileAsync/${image}`);
         }));
-
         await refreshGallery();
-
         selectionData.images = [];
     } catch(error){
         console.log(error);
     }
-    // await fetch(`DeleteFileAsync/${selectionData.images[0]}`)
-    // .then(async () => {
-    //     await refreshGallery();
-    //     selectionData.images = [];
-    // })
-    // .catch(error => console.log(error));
 })
 
 const refreshButton = document.getElementById('refreshButton');
