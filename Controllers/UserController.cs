@@ -24,7 +24,7 @@ namespace PullAt.Controllers
         public async Task<IActionResult> Login()
         {
             if(User.Identity.IsAuthenticated){
-                return RedirectToAction("Files","File");
+                return RedirectToAction("Index","Home");
             }
             return View();
         }
@@ -62,7 +62,7 @@ namespace PullAt.Controllers
                     
                 HttpContext.Session.SetString("Token", token);//For HTTP Header
                 Response.Cookies.Append("AuthToken", token);//For storing JWT Token
-                return Redirect("/File/Files");
+                return RedirectToAction("Index","Home");
             }
             return RedirectToAction(nameof(Login));
         }

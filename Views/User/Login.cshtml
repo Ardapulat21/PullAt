@@ -1,12 +1,19 @@
 @model PullAt.Models.User
 @{
 }
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    <div class="outerClass">
-        <div class="centerContainer">
+    <div class="container">
+        <div class="credential-container">
             <h4>Login</h4>
             <hr />
             <form action="/User/Login" method="post">
@@ -16,26 +23,21 @@
                 </div>
                 <div class="input">
                     <label for="password">Password </label>
-                    <input asp-for="Password" type="Password" id="password" name="Password" style="margin-left:3px" required>
+                    <input asp-for="Password" type="Password" id="password" name="Password" required>
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" id="showPassword" />
                     <label for="showPassword">Show Password</label>
                 </div>
                 <div>
-                    @Html.ValidationSummary(true, "", new { @style = "margin-left:55px;text-align:left;color:red"})
+                    @Html.ValidationSummary(true, "")
                 </div>
-                <div style="margin-top:10px;margin-left:40px">
-                    <input type="submit" value="Login" class="customized-button" style="width:120px" />
-                </div>
+                <input type="submit" value="Login" class="submit-button" />
             </form>
         </div>
     </div>
-    <script>
-        const passwordField = document.getElementById('password');
-        const showPassword = document.getElementById('showPassword');
-        showPassword.addEventListener('change', function() {
-            passwordField.type = this.checked ? 'text' : 'password';
-        });
-    </script>
+    <script src="~/js/views/login.js" type="module" asp-append-version="true" async></script>
 }
+</body>
+</html>
+

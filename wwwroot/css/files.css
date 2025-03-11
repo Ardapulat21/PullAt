@@ -1,16 +1,24 @@
+.file-layout {
+    display: flex;
+    flex-direction: row;
+}
+
 .gallery-layout {
     display: flex;
     flex-direction: column;
     justify-content: center;
     height: 100vh;
+    width: 100%;
 }
 .gallery{
     display: inline-block;
-    background-color: rgba(249, 249, 249, 0.6);
-    padding:50px;
+    background-color: rgba(249, 249, 249, 0.1);
+    border:1px solid white;
+    padding:120px 50px;
     overflow-y: auto;
     max-height: 100vh;
     margin:0 auto;
+
 }
 .file-grid {
     display: grid;
@@ -54,19 +62,20 @@
     transition:max-height 1.5s ease-out;
 }
 .content.expanded {
-    max-height: 100px; /* Or any large enough value */
+    max-height: 100px;
     padding: 5px 15px;
 }
-
-.expandable-menu{
-    position: absolute;
-    left: 20px;
-    top: 50px;
+.file-menu-container {
+    padding-top: 20px;
+    padding-left: 10px;
 }
-#expandable-button:hover, .content:hover{
+.file-menu{
+    
+}
+#file-menu-button:hover, .content:hover{
     opacity: 0.7;
 }
-#expandable-button{
+#file-menu-button{
     display: grid;
     place-items: center;
     background-color: rgb(52, 57, 100);
@@ -77,10 +86,11 @@
     border:1px solid black;
     cursor:pointer;
 }
-.expandable-items{
+.file-menu-items{
     display: flex;
     border-width: 1px;
     flex-direction: column;
+    justify-content: end;
 }
 .overlay-container{
     position:absolute;

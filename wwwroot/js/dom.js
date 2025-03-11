@@ -1,12 +1,9 @@
 import { addIfNotExist } from "./utils.js";
 var contents = document.getElementsByClassName("content");
-var icon = document.getElementById("icon");
+var fileMenuIcon = document.getElementById("file-menu-icon");
 
 let toggleMenu = () => {
-    icon.classList.contains("bi-caret-down") ? 
-    icon.classList.toggle("bi-caret-up") :
-    icon.classList.toggle("bi-caret-down");
-
+    fileMenuIcon.classList.toggle("bi-caret-up");
     for(const content of contents){
         content.classList.toggle("expanded");
     }

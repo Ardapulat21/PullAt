@@ -1,5 +1,7 @@
 html {
   font-size: 14px;
+  height: 100vh;
+  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -10,6 +12,7 @@ html {
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
+
 body {
     color: white;
     margin:0;
@@ -18,88 +21,73 @@ body {
     background-size: cover; 
     background-position: center; 
     background-attachment: fixed;
-    height: 100vh;
     font-weight: 200;
     font-family: "Roboto Flex", sans-serif;
 }
+
 a {
     text-decoration: none;
     color: black;
 }
 
-.logoLabel{
-  padding-left: 10px;
-  padding-right: 10px;
-  color: white;
-}
-.outerClass{
+.body-layout{
   display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
+  flex-direction: row;
+  height: 96.5vh;
 }
-.centerContainer{
+
+.content-layout {
+  min-width: 80%;
+  height: 96.5vh;
+}
+.container {
+  height: 96.5vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.credential-container{
     width: 330px;
-    overflow: auto;
-    padding-left:30px;
-    padding-right:30px;
-    padding-top:70px;
-    padding-bottom:70px;
-    text-align:center;
-    margin:0 auto;
+    padding:60px 30px;
     border:0.5px solid white;
     backdrop-filter: blur(0px);
     transition: backdrop-filter 1s;
-    background-color: rgba(249, 249, 249, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-.centerContainer:hover {
+.credential-container:hover {
   backdrop-filter: blur(9px);
-}
-
-.bottom-div {
-    position: fixed;
-    bottom: 0; 
-    left: 0; 
-    width: 100%; 
-    padding: 10px; 
 }
 
 .header{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgb(52, 57, 100);
+  background-color: rgba(255,255,255,0.1);
   padding:0;
-}
-.input{
-  display: inline-block;
-  margin-top: 10px;
+  height: 3.5vh;
   padding-left: 10px;
+}
+
+.input{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 250px;
+  margin-top: 10px;
 }
 .checkbox{
   margin-top:10px;
   text-align:left;
-  margin-left:72px
 }
-.authButtons {
-  display: flex;
-  flex-direction: row;
-}
-.authButtons > div {
-transition: background-color 0.3s ease;
-  margin-left: 10px;
-padding: 4px 10px 4px 10px;
-}
-.authButtons > div:hover {
-  background-color: rgba(249, 249, 249, 0.3);
-}
-
-.customized-button {
+.submit-button {
   width: 50px;
   height: 30px;
   border-radius: 3px;
+  margin-top: 15px;
   background-color: transparent;
   border-width: 0.5px;
   border-style: solid;
@@ -107,9 +95,85 @@ padding: 4px 10px 4px 10px;
   transition: background-color 0.4s ease;
   transition: color 0.4s ease;
   color: white;
-
+  width: 100px;
 }
-.customized-button:hover {
+.submit-button:hover {
   background-color: rgb(196, 196, 196);
   color:black;
+}
+
+i {
+  font-size: 24px;
+}
+
+#home-menu {
+  display: flex;
+  flex-direction: column;
+  width: 140px;
+  transition: width 1s;
+  padding:0;
+  margin:0;
+  height: 96.5vh;
+  background-color: rgba(255,255,255,0.1);
+}
+
+#home-menu-button-layout {
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#home-menu-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:white;
+  height: 30px;
+}
+
+#home-menu-button-layout:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.home-menu-item {
+  display: flex;
+  justify-content: start;
+  flex-direction: row;
+  overflow-x: hidden;
+  padding-left: 10px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.home-menu-page-items {
+  flex:1;
+}
+
+.home-menu-item.active{
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.home-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.home-menu-content {
+  margin:auto 0;
+  padding-left: 10px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.home-menu-content.closed {
+  padding:0px;
+}
+
+#home-menu-items {
+  display: flex;
+  flex-direction: column;
+  flex-grow:1;
+}
+
+.red {
+   color:rgb(240, 112, 112);
 }

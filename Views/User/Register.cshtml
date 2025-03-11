@@ -1,11 +1,19 @@
 @model PullAt.Models.User 
 @{
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    <div class="outerClass">
-        <div class="centerContainer">
+    <div class="container">
+        <div class="credential-container">
             <h4>Register</h4>
             <hr />
             <form action="/User/Register" method="post">
@@ -15,11 +23,11 @@
                 </div>
                 <div class="input">
                     <label for="email">Email </label>
-                    <input asp-for="Email" type="email" id="email" name="Email" style="margin-left:33px" required>
+                    <input asp-for="Email" type="email" id="email" name="Email" required>
                 </div>
                 <div class="input">
                     <label for="password">Password </label>
-                    <input asp-for="Password" type="Password" id="password" name="Password" style="margin-left:3px" required>
+                    <input asp-for="Password" type="Password" id="password" name="Password"  required>
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" id="showPassword" />
@@ -27,22 +35,16 @@
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" id="Agreement" name="Agreement" required/>
-                    <label for="Agreement">I read <a id="Agreement" asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #56564d;">Agreement</a></label>
+                    <label for="Agreement">I read agreement</label>
                 </div>
                 <div>
-                    @Html.ValidationSummary(true, "", new { @style = "margin-left:55px;text-align:left;color:red"})
+                    @Html.ValidationSummary(true, "")
                 </div>
-                <div style="margin-top:10px;margin-left:40px">
-                    <input type="submit" value="Register" class="customized-button" style="width:120px" />
-                </div>
+                <input type="submit" value="Register" class="submit-button"/>
             </form>
         </div>
     </div>
-    <script>
-        const passwordField = document.getElementById('password');
-        const showPassword = document.getElementById('showPassword');
-        showPassword.addEventListener('change', function() {
-            passwordField.type = this.checked ? 'text' : 'password';
-        });
-    </script>
 }
+<script src="~/js/views/login.js" type="module" asp-append-version="true" async></script>
+</body>
+</html>

@@ -7,3 +7,21 @@ function navigateToHome() {
     var url = '/Home/Index';
     window.location.href = url;
 }
+
+const homeMenu = document.getElementById('home-menu');
+const homeMenuContent = document.getElementById('home-menu-content');
+const homeMenuIcon = document.getElementById('home-menu-icon-menu');
+const homeMenuButton = document.getElementById('home-menu-button-layout');
+var isHomeMenuExpanded = true;
+homeMenuButton.addEventListener('click',() => {
+    if(isHomeMenuExpanded){
+        homeMenu.style.width = '40px';
+    }
+    else{
+        homeMenu.style.width = '140px';
+    }
+    homeMenuIcon.classList.toggle("bi-caret-right");
+    isHomeMenuExpanded = !isHomeMenuExpanded;
+});
+
+

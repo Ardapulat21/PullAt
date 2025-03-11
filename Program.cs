@@ -98,4 +98,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=User}/{action=Login}/{id?}");
-app.Run();
+
+app.Run("http://0.0.0.0:5134"); 
+// app.Run();

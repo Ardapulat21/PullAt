@@ -1,6 +1,4 @@
 import { appendImageElement } from "./dom.js";
-import { POST ,AJAX } from "./api.js";
-
 let download = (filename) => {
     fetch(`/File/DownloadFile/${filename}`)
     .then(response => response.blob())
@@ -23,9 +21,14 @@ let uploadFile = async (event) => {
 
     const formData = new FormData();
     formData.append("file", file);
-    await POST(
-        "/File/UploadFile",formData)
+    await fetch(
+        '/File/UploadFile',
+        {
+            method: 'POST', 
+            body: formData
+        })
         .then(refreshGallery);
+
     event.target.value = '';
 }
 

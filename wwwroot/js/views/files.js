@@ -1,19 +1,18 @@
-import { GET, POST, AJAX } from "./api.js";
-import { toggleMenu, displayImage, selectImage, selectionModeToggle } from "./dom.js";
-import { download, refreshGallery, uploadFile} from "./filehandler.js";
+import { toggleMenu, displayImage, selectImage, selectionModeToggle } from "../dom.js";
+import { download, refreshGallery, uploadFile} from "../filehandler.js";
 
 const selectionData = {
     filename: '',
     mode: false,
     images: [],
 };
-var button = document.getElementById("expandable-button");
+var button = document.getElementById("file-menu-button");
 button.addEventListener("click",toggleMenu);
 
 const fileInput = document.getElementById("fileInput");
 fileInput.addEventListener("change",uploadFile);
 
-const uploadButton = document.getElementById("UploadButton");
+const uploadButton = document.getElementById("uploadButton");
 uploadButton.addEventListener("click", () => {
     fileInput.click();
 });
@@ -77,4 +76,12 @@ deleteButton.addEventListener('click',async () => {
 const refreshButton = document.getElementById('refreshButton');
 refreshButton.addEventListener('click',() =>{
     refreshGallery();
+});
+
+
+const homeMenu = document.getElementById('home-menu')
+const menuButton = document.getElementById('home-menu-button');
+menuButton.addEventListener('click',() => {
+    console.log('hey');
+    homeMenu.style.width = '0px';
 });
