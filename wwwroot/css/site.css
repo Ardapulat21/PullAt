@@ -139,7 +139,7 @@ i {
   display: flex;
   justify-content: start;
   flex-direction: row;
-  overflow-x: hidden;
+  overflow: hidden;
   padding-left: 10px;
   height: 35px;
   cursor: pointer;

@@ -9,6 +9,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IFileService, FileService>();
+builder.Services.AddSingleton<IPathService, PathService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
@@ -56,8 +57,8 @@ builder.Services.AddAuthentication(options =>
     };
 }).AddCookie(options =>
 {
-    options.Cookie.HttpOnly = true; // Prevent JavaScript access to cookies
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Enforce HTTPS
+    options.Cookie.HttpOnly = true; 
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
     options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
     options.Cookie.SameSite = SameSiteMode.Strict; 
     options.LoginPath = "/User/Login"; 

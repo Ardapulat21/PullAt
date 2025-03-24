@@ -10,7 +10,9 @@ var button = document.getElementById("file-menu-button");
 button.addEventListener("click",toggleMenu);
 
 const fileInput = document.getElementById("fileInput");
-fileInput.addEventListener("change",uploadFile);
+fileInput.addEventListener("change",(event) => {
+    uploadFile(event,'/File/UploadFile')
+});
 
 const uploadButton = document.getElementById("uploadButton");
 uploadButton.addEventListener("click", () => {

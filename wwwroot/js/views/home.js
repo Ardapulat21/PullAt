@@ -11,5 +11,11 @@ const filesButton = document.getElementById('files-button');
 filesButton.addEventListener('click',() => {
     if(window.location.pathname != '/File/Files')
         window.location.href = '/File/Files'
+});
 
+const accountButton = document.getElementById('account-button');
+accountButton.addEventListener('click',() => {
+    const url = '/Account/Account'
+    if(window.location.pathname != url)
+        window.location.href = url;
 });

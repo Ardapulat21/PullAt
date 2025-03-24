@@ -35,9 +35,9 @@ i {
     display: flex;
     justify-content: start;
     flex-direction: row;
-    overflow-x: hidden;
     padding-left: 10px;
     height: 35px;
+    overflow: hidden;
 }
 
 .home-menu-item:hover {
@@ -47,7 +47,6 @@ i {
 .home-menu-content {
     margin:auto 0;
     padding-left: 10px;
-    overflow: hidden;
     width: 100%;
 }
 

@@ -15,14 +15,14 @@ let download = (filename) => {
     .catch(err => console.error('Error downloading file:', err));
 };
 
-let uploadFile = async (event) => {
+let uploadFile = async (event,endpoint) => {
     const file = event.target.files[0];
     if(!file) return;
 
     const formData = new FormData();
     formData.append("file", file);
     await fetch(
-        '/File/UploadFile',
+        path,
         {
             method: 'POST', 
             body: formData

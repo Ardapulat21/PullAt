@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using PullAt.Interfaces;
+using PullAt.Services;
 using FileInfo = PullAt.Models.FileInfo;
 namespace PullAt.Controllers
 {
@@ -10,17 +11,19 @@ namespace PullAt.Controllers
     public class FileController : Controller
     {
         private readonly IFileService _fileService;
+        private readonly IPathService _pathService;
         private readonly string _usersFolder;
-        public FileController(IFileService fileService,IHostEnvironment env)
+        public FileController(IFileService fileService,IPathService pathService)
         {
             _fileService = fileService;
-            _usersFolder = Path.Combine(env.ContentRootPath,"users");
+            _pathService = pathService;
+            _usersFolder = _pathService.GetUserFolderPath;
         }
         [HttpPost("UploadFile")]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             try{
-                var result = await _fileService.UploadFileAsync(file);
+                var result = await _fileService.UploadFileAsync(file,_pathService.GetUserFolderPath);
                 return result.IsSuccess ? Ok("File uploaded successfully") : BadRequest(result.Message);
             }
             catch(Exception ex){
@@ -80,7 +83,6 @@ namespace PullAt.Controllers
             try{
                 if(String.IsNullOrEmpty(filename))
                     return BadRequest("File name is null");
-                Console.WriteLine($"HEY {filename}");
                 var data = await (dynamic)_fileService.DownloadFileAsync(filename,User.Identity.Name);
                 return File(data.fileBytes, data.contentType, filename);
             }

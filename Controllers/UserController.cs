@@ -4,18 +4,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PullAt.Interfaces;
 using PullAt.Models;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 namespace PullAt.Controllers
 {
     public class UserController : Controller 
     {
         IUserService _userService;
-        HttpClient _httpClient;
         public UserController(IUserService userService,HttpClient httpClient) 
         {
             _userService = userService;
-            _httpClient = httpClient;
         }
         public async Task<IActionResult> Register()
         {
@@ -23,10 +20,7 @@ namespace PullAt.Controllers
         }
         public async Task<IActionResult> Login()
         {
-            if(User.Identity.IsAuthenticated){
-                return RedirectToAction("Index","Home");
-            }
-            return View();
+            return User.Identity.IsAuthenticated ? RedirectToAction("Index","Home") : View();
         }
         public async Task<IActionResult> Logout(){
             HttpContext.Session.Clear();
