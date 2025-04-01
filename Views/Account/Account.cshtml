@@ -1,3 +1,5 @@
+@using System.Security.Claims
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,24 +13,21 @@
         <div class="account-container">
             <div class="profile-container">
                 <div class="profile-picture">
-                    <img class="profile-picture" src="~/Assets/Flemingo.jpg">
+                    <img id="profile-picture" class="profile-picture" src="@Url.Content(ViewBag.RelativePath)">    
                 </div>
                 <div class="profile-username">@User.Identity.Name</div>
             </div>
             <div class="profile-actions">
                 <div id="change-profile-photo">
-                    <form method="post" enctype="multipart/form-data" name="form">
+                    <form method="post" enctype="multipart/form-data" name="file">
                         <input type="file" id="imageInput" name="image" accept="image/*" style="display: none;" />
                         <a href="" id="change-profile-photo-anchor">Change Profile Photo </a>
                      </form>
                 </div>
-                <div id=""></div>
-                <div id=""></div>
             </div>
             <div class="user-infos">
-
+                <div>@User.FindFirst(ClaimTypes.Email)?.Value</div>
             </div>
-            Account
         </div>
     </div>
 </body>

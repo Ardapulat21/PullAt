@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using PullAt.Interfaces;
 using PullAt.Models;
 using FileInfo = PullAt.Models.FileInfo;
@@ -11,17 +12,20 @@ namespace PullAt.Services
         public FileService(IPathService pathService)
         {
             _pathService = pathService; 
-            _userFolder = pathService.GetUserFolderPath;
         }
         public List<FileInfo>? GetFiles(string username)
         {
+            _userFolder = _pathService.GetUserFolderPath;
             if(!Directory.Exists(_userFolder)){
                 return null;
             }
             var files = new List<FileInfo>();
             var filePaths = Directory.GetFiles(_userFolder);
             foreach (var file in filePaths){
-                files.Add(new Models.FileInfo(){
+                if(Path.GetFileName(file).StartsWith("Profile_photo"))
+                    continue;
+                    
+                files.Add(new FileInfo(){
                     Filename = Path.GetFileName(file),
                     FilePath = file,
                     DateTime = System.IO.File.GetCreationTime(file)
@@ -37,11 +41,7 @@ namespace PullAt.Services
                 {
                     return Result.Failure("No file is selected.");
                 }
-                var extension = Path.GetExtension(file.FileName).ToLower();
-
-                var filePath = _pathService.CreateFilePath(path,file.FileName,extension);
-                await SaveFileAsync(file,filePath);
-
+                await SaveFileAsync(file,path);
                 return Result.Success();
             }
             catch (Exception ex){
@@ -54,13 +54,12 @@ namespace PullAt.Services
                 await file.CopyToAsync(stream);
             }
         }
-        public Task<Result> DeleteFileAsync(string filename,string username){
+        public Task<Result> DeleteFileAsync(string path){
             try{
-                var imagePath = Path.Combine(_userFolder, filename);
-                if (!File.Exists(imagePath))
+                if (!File.Exists(path))
                     return null;
                 
-                File.Delete(imagePath);
+                File.Delete(path);
                 return Task.FromResult(Result.Success());
             }
             catch(Exception ex){
@@ -70,6 +69,7 @@ namespace PullAt.Services
         public async Task<object> DownloadFileAsync(string filename,string username)
         {
             try{
+                _userFolder = _pathService.GetUserFolderPath;
                 var imagePath = Path.Combine(_userFolder, filename);
                 
                 if (!File.Exists(imagePath))

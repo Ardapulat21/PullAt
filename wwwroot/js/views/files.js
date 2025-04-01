@@ -11,7 +11,7 @@ button.addEventListener("click",toggleMenu);
 
 const fileInput = document.getElementById("fileInput");
 fileInput.addEventListener("change",(event) => {
-    uploadFile(event,'/File/UploadFile')
+    uploadFile(event,'/File/UploadFile',refreshGallery)
 });
 
 const uploadButton = document.getElementById("uploadButton");

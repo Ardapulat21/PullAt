@@ -15,19 +15,20 @@ let download = (filename) => {
     .catch(err => console.error('Error downloading file:', err));
 };
 
-let uploadFile = async (event,endpoint) => {
+let uploadFile = async (event,endpoint,callback = null) => {
     const file = event.target.files[0];
     if(!file) return;
 
     const formData = new FormData();
     formData.append("file", file);
     await fetch(
-        path,
+        endpoint,
         {
             method: 'POST', 
             body: formData
         })
-        .then(refreshGallery);
+        .then(response => response.json())
+        .then(callback);
 
     event.target.value = '';
 }

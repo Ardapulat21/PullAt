@@ -3,7 +3,6 @@
     border:0.5px solid white;
 }
 
-
 .profile-container {
     display: flex;
     flex-direction: column;
@@ -35,4 +34,8 @@
 #change-profile-photo a {
     color:white;
     font-style: italic;
+}
+
+.user-infos {
+    padding-top: 20px;
 }

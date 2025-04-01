@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using PullAt.Interfaces;
 using PullAt.Services;
@@ -79,7 +80,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+var usersPath = Path.Combine(Directory.GetCurrentDirectory(), "Users");
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(usersPath),
+    RequestPath = "/users"
+});
+
+
+
 app.UseRouting();
 
 app.UseSession();

@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
+using Pullat.Models;
 using PullAt.Interfaces;
 using PullAt.Models;
 namespace PullAt.Services
@@ -29,26 +30,25 @@ namespace PullAt.Services
             var url = Path.Combine(_apiUrl,"Register");
             var response = await _httpClient.PostAsJsonAsync(url, user);
             if (response.IsSuccessStatusCode){
-                var resourceFolder = _pathService.GetUserFolderPath;
-                if(!Directory.Exists(resourceFolder))
-                    Directory.CreateDirectory(resourceFolder);
-                
-                // File.Copy("","");
-                
+                await CreateUserDirectory(user);
                 return true;
             }
             return false;
         }
-        public async Task<string?> Login(User user){
+        public async Task<UserCredentials?> Login(User user){
             var url = Path.Combine(_apiUrl,"Login");
             var response = await _httpClient.PostAsJsonAsync(url, user);
             if (response.IsSuccessStatusCode){
-                
-                    
-                var token = await response.Content.ReadAsStringAsync();
-                return token;
+                await CreateUserDirectory(user);
+                var result = await response.Content.ReadFromJsonAsync<UserCredentials>();
+                return result;
             }
             return null;
+        }
+        public async Task CreateUserDirectory(User user){
+            var resourceFolder = Path.Join(_pathService.GetUsersFolderPath,user.Username);
+            if(!Directory.Exists(resourceFolder))
+                Directory.CreateDirectory(resourceFolder);
         }
         public async Task Delete(int id){
             var url = Path.Combine(_apiUrl,"Delete",$"{id}");

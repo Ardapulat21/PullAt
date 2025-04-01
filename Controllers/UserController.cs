@@ -42,20 +42,20 @@ namespace PullAt.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(User user)   
         {
-            var token = await _userService.Login(user); 
-            if(token != null){
+            var credentials = await _userService.Login(user); 
+            if(credentials != null){
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.Username)
+                    new Claim(ClaimTypes.Name, credentials.Username),
+                    new Claim(ClaimTypes.Name, credentials.Email)
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity));
                     
-                HttpContext.Session.SetString("Token", token);//For HTTP Header
-                Response.Cookies.Append("AuthToken", token);//For storing JWT Token
+                HttpContext.Session.SetString("Token", credentials.Token);//For HTTP Header
+                Response.Cookies.Append("AuthToken", credentials.Token);//For storing JWT Token
                 return RedirectToAction("Index","Home");
             }
             return RedirectToAction(nameof(Login));

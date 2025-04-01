@@ -23,7 +23,8 @@ namespace PullAt.Controllers
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             try{
-                var result = await _fileService.UploadFileAsync(file,_pathService.GetUserFolderPath);
+                var path = Path.Join(_pathService.GetUserFolderPath,file.FileName);
+                var result = await _fileService.UploadFileAsync(file,path);
                 return result.IsSuccess ? Ok("File uploaded successfully") : BadRequest(result.Message);
             }
             catch(Exception ex){
@@ -68,7 +69,11 @@ namespace PullAt.Controllers
             try{
                 if(String.IsNullOrEmpty(filename))
                     return BadRequest("File name is null");
-                var result = await _fileService.DeleteFileAsync(filename, User.Identity?.Name);
+
+                var _userFolder = _pathService.GetUserFolderPath;
+                var path = Path.Combine(_userFolder, filename);
+
+                var result = await _fileService.DeleteFileAsync(path);
                 if(result.IsSuccess){
                     return Ok("Media has been deleted");
                 }

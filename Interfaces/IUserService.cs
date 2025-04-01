@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Pullat.Models;
 using PullAt.Models;
 
 namespace PullAt.Interfaces
@@ -9,6 +10,6 @@ namespace PullAt.Interfaces
         public Task<bool> Register(User credentials);
         public Task Delete(int id);
         public Task Edit(User credentials,int id);
-        public Task<string?> Login(User credentials);
+        public Task<UserCredentials?> Login(User user);
     }
 }
