@@ -72,22 +72,21 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseStaticFiles();
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
 
 app.UseHttpsRedirection();
 var usersPath = Path.Combine(Directory.GetCurrentDirectory(), "Users");
+app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(usersPath),
     RequestPath = "/users"
 });
 
-
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
 app.UseRouting();
 
@@ -110,4 +109,3 @@ app.MapControllerRoute(
     pattern: "{controller=User}/{action=Login}/{id?}");
 
 app.Run("http://0.0.0.0:5134"); 
-// app.Run();
