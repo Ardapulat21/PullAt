@@ -1,4 +1,3 @@
-import { addIfNotExist } from "./utils.js";
 var contents = document.getElementsByClassName("content");
 var fileMenuIcon = document.getElementById("file-menu-icon");
 
@@ -82,5 +81,22 @@ let selectionModeToggle = (selectionData) => {
     }
     selectionData.mode = !selectionData.mode;
 };
+
+
+let removeElementFromArray = (array,val) => {
+    const index = array.indexOf(val);
+    if(index > -1){
+        array.splice(index,1);
+    }
+}
+
+let addIfNotExist = (array,val) => {
+    if(!array.includes(val)){
+        array.push(val);
+    }
+    else{
+        removeElementFromArray(array,val);
+    }
+}
 
 export { toggleMenu, select, displayImage, selectImage, selectionModeToggle, appendImageElement };
