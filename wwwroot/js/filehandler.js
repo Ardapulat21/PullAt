@@ -1,4 +1,4 @@
-import { appendImageElement } from ".dom.js";
+import { appendImageElement } from "./dom.js";
 let download = (filename) => {
     fetch(`/File/DownloadFile/${filename}`)
     .then(response => response.blob())
