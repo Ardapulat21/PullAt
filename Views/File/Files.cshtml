@@ -31,16 +31,11 @@
         </div>
         <div class="gallery-layout">
             <div class="gallery">
-                <div class="select-button-div">
-                    <div class="select-button">Select</div>
-                </div>
                 <div class="file-grid">
                     @foreach (var file in Model)
-                    {
-                        <div class="file-item">
-                            <img name="@file.Filename" src="@file.FilePath" class="gallery-item"/>
-                        </div>
-                    }
+                    {<div class="file-item">
+                        <img name="@file.Filename" src="@file.FilePath" class="gallery-item"/>
+                    </div>}
                 </div>
             </div>
         </div>

@@ -8,16 +8,6 @@ let toggleMenu = () => {
     }
 };
 
-let select = (image) => {
-    const indicator = document.createElement('div');
-    indicator.classList.add('selection-indicator');
-
-    const indicatorElement = image.querySelector(".selection-indicator");
-    indicatorElement 
-    ? image.removeChild(indicatorElement) 
-    : image.appendChild(indicator);
-};
-
 const overlayContainer = document.querySelector('.overlay-container');
 const imageOverlay = document.querySelector('.image-overlay');
 const overlayTitle = document.querySelector('.overlay-title');
@@ -26,7 +16,7 @@ let setOverlayImage = (imagePath,imageName) => {
     imageOverlay.src = imagePath;
     overlayTitle.textContent =  imageName;
     overlayContainer.style.display = 'block';
-}
+};
 
 let appendImageElement = (fileGrid,file) => {
     const fileItem = document.createElement("div");
@@ -39,30 +29,59 @@ let appendImageElement = (fileGrid,file) => {
 
     fileItem.appendChild(img);
     fileGrid.appendChild(fileItem);
+};
+
+let mouseOverImage = (event) => {
+    const image = event.target.closest('.file-item');
+    if(!image) return;
+
+    if (image.querySelector('.select-indicator')) return;
+
+    const indicator = document.createElement('div');
+    indicator.classList.add('select-indicator');
+
+    image.appendChild(indicator);
+};
+
+let mouseOutImage = (event) => {
+    const indicators = document.querySelectorAll('.select-indicator');
+
+    indicators.forEach(indicator => {
+      indicator.remove();
+    });
 }
 
-let displayImage = (event,selectionData) => {
-    const clickedImg = event.target.closest('.file-item');
-    if (!clickedImg) return;
+let selectImage = (event,selectionData) => {
+    if (event.target.classList.contains('select-indicator')) {
+        const parentImage = event.target.closest('.file-item');
+        if (!parentImage) return;
 
-    const childImage = clickedImg.querySelector('.gallery-item');
-    selectionData.filename = childImage.getAttribute('name');
-    if(selectionData.mode){
-        addIfNotExist(selectionData.images,selectionData.filename);
-    }
-    else{
-        const imagePath = childImage.getAttribute('src');
-        setOverlayImage(imagePath,selectionData.filename);
+        const selectIndicator = parentImage.querySelector('.select-indicator');
+        selectIndicator.remove();
+        
+        const isSelected = parentImage.querySelector('.selected-indicator');
+        if(isSelected){
+            isSelected.remove();
+        }
+        else{
+            const selectedIndicator = document.createElement('div');
+            selectedIndicator.classList.add('selected-indicator');
+            parentImage.appendChild(selectedIndicator);
+        }
+        const img = parentImage.querySelector('.gallery-item');
+        toggleArrayItem(selectionData.images,img.getAttribute('name'));
     }
 };
 
-let selectImage = (event,selectionData) => {
-    if(!selectionData.mode) return;
-    
+let displayImage = (event) => {
     const clickedImg = event.target.closest('.file-item');
-    if(!clickedImg) return;
+    if (!clickedImg) return;
 
-    select(clickedImg);
+    const img = clickedImg.querySelector('.gallery-item');
+    let imageName = img.getAttribute('name');
+
+    const imagePath = img.getAttribute('src');
+    setOverlayImage(imagePath,imageName);
 };
 
 const selectButton = document.querySelector(".select-button");
@@ -71,7 +90,7 @@ let selectionModeToggle = (selectionData) => {
     if(selectionData.mode){
         selectionData.images = [];
         selectButton.style.backgroundColor = "rgba(249, 249, 249, 0.3)";
-        const elements = document.querySelectorAll(`.selection-indicator`);
+        const elements = document.querySelectorAll(`.selected-indicator`);
         elements.forEach(element => {
             element.parentNode.removeChild(element);
         });
@@ -82,21 +101,14 @@ let selectionModeToggle = (selectionData) => {
     selectionData.mode = !selectionData.mode;
 };
 
-
-let removeElementFromArray = (array,val) => {
-    const index = array.indexOf(val);
-    if(index > -1){
-        array.splice(index,1);
+let toggleArrayItem = (array, value) => {
+    const index = array.indexOf(value);
+    if (index !== -1) {
+        array.splice(index, 1);
+    } else {
+        array.push(value);
     }
+    return array;
 }
 
-let addIfNotExist = (array,val) => {
-    if(!array.includes(val)){
-        array.push(val);
-    }
-    else{
-        removeElementFromArray(array,val);
-    }
-}
-
-export { toggleMenu, select, displayImage, selectImage, selectionModeToggle, appendImageElement };
+export { toggleMenu, displayImage, selectionModeToggle, appendImageElement , mouseOverImage , mouseOutImage , selectImage};

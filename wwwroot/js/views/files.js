@@ -1,4 +1,4 @@
-import { toggleMenu, displayImage, selectImage, selectionModeToggle } from "../dom.js";
+import { toggleMenu, displayImage, selectionModeToggle , mouseOverImage , mouseOutImage , selectImage} from "../dom.js";
 import { download, refreshGallery, uploadFile} from "../filehandler.js";
 
 const selectionData = {
@@ -6,12 +6,23 @@ const selectionData = {
     mode: false,
     images: [],
 };
+
 var button = document.getElementById("file-menu-button");
 button.addEventListener("click",toggleMenu);
 
 const fileInput = document.getElementById("fileInput");
+
 fileInput.addEventListener("change",(event) => {
-    uploadFile(event,'/File/UploadFile',refreshGallery)
+    const file = event.target.files[0];
+
+    uploadFile(file, '/File/UploadFile/', (err, result) => {
+        if (err) {
+            console.error("Upload error:", err.message);
+        } else {
+            console.log("Upload successful:", result);
+            refreshGallery(); 
+        }
+    });
 });
 
 const uploadButton = document.getElementById("uploadButton");
@@ -19,14 +30,24 @@ uploadButton.addEventListener("click", () => {
     fileInput.click();
 });
 
-const fileGrid = document.querySelector('.file-grid');
-fileGrid.addEventListener('click',(event) => {
-    displayImage(event,selectionData);
+const galleryItems = document.getElementsByClassName('gallery-item');
+
+[...galleryItems].forEach(item => {
+    item.addEventListener('click',(event) => {
+        displayImage(event,selectionData);
+    });
 });
 
-fileGrid.addEventListener('click',(event) => {
-    selectImage(event,selectionData);
+const fileItems = document.getElementsByClassName('file-item');
+
+[...fileItems].forEach(item => {
+    item.addEventListener('mouseover',(event) => {
+        mouseOverImage(event);
+    });
+    item.addEventListener('mouseleave',mouseOutImage);
 });
+
+document.querySelector('.gallery').addEventListener('click', (event) => {selectImage(event,selectionData)});
 
 const overlayContainer = document.querySelector('.overlay-container');
 
@@ -35,11 +56,10 @@ imageContainer.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
 
-const selectButton = document.querySelector(".select-button");
-selectButton.addEventListener('click',(event) => {
-    selectionModeToggle(selectionData);
-
-});
+// const selectButton = document.querySelector(".select-button");
+// selectButton.addEventListener('click',(event) => {
+//     selectionModeToggle(selectionData);
+// });
 
 const downloadButton = document.getElementById('downloadButton');
 downloadButton.addEventListener('click',() => {
@@ -78,12 +98,4 @@ deleteButton.addEventListener('click',async () => {
 const refreshButton = document.getElementById('refreshButton');
 refreshButton.addEventListener('click',() =>{
     refreshGallery();
-});
-
-
-const homeMenu = document.getElementById('home-menu')
-const menuButton = document.getElementById('home-menu-button');
-menuButton.addEventListener('click',() => {
-    console.log('hey');
-    homeMenu.style.width = '0px';
 });
