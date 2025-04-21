@@ -1,4 +1,4 @@
-import { toggleMenu, displayImage, selectionModeToggle , mouseOverImage , mouseOutImage , selectImage} from "../dom.js";
+import { toggleMenu, displayImage , mouseOverImage , mouseOutImage , selectImage} from "../dom.js";
 import { download, refreshGallery, uploadFile} from "../filehandler.js";
 
 const selectionData = {
@@ -15,7 +15,7 @@ const fileInput = document.getElementById("fileInput");
 fileInput.addEventListener("change",(event) => {
     const file = event.target.files[0];
 
-    uploadFile(file, '/File/UploadFile/', (err, result) => {
+    uploadFile(file, 'http://localhost:5134/File/UploadFile/', (err, result) => {
         if (err) {
             console.error("Upload error:", err.message);
         } else {
@@ -30,21 +30,24 @@ uploadButton.addEventListener("click", () => {
     fileInput.click();
 });
 
-const galleryItems = document.getElementsByClassName('gallery-item');
+const fileGrid = document.querySelector('.file-grid');
 
-[...galleryItems].forEach(item => {
-    item.addEventListener('click',(event) => {
-        displayImage(event,selectionData);
-    });
+fileGrid.addEventListener('click',(event) => {
+    if (event.target.classList.contains('gallery-item')) {
+        displayImage(event);
+    }
 });
 
-const fileItems = document.getElementsByClassName('file-item');
-
-[...fileItems].forEach(item => {
-    item.addEventListener('mouseover',(event) => {
+fileGrid.addEventListener('mouseover',(event) => {
+    if (event.target.classList.contains('gallery-item')) {
         mouseOverImage(event);
-    });
-    item.addEventListener('mouseleave',mouseOutImage);
+    }
+});
+
+fileGrid.addEventListener('mouseout',(event) => {
+    if (event.target.classList.contains('file-item')) {
+        mouseOutImage(event);
+    }
 });
 
 document.querySelector('.gallery').addEventListener('click', (event) => {selectImage(event,selectionData)});
@@ -55,11 +58,6 @@ const imageContainer = document.getElementById('imageContainer');
 imageContainer.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
 });
-
-// const selectButton = document.querySelector(".select-button");
-// selectButton.addEventListener('click',(event) => {
-//     selectionModeToggle(selectionData);
-// });
 
 const downloadButton = document.getElementById('downloadButton');
 downloadButton.addEventListener('click',() => {
@@ -86,7 +84,7 @@ const deleteButton = document.getElementById('deleteButton');
 deleteButton.addEventListener('click',async () => {
     try{
         await Promise.all(selectionData.images.map(async (image) => {
-            await fetch(`DeleteFileAsync/${image}`);
+            await fetch(`http://localhost:5134/File/DeleteFileAsync/${image}`);
         }));
         await refreshGallery();
         selectionData.images = [];

@@ -1,6 +1,6 @@
 const logoutButton = document.getElementById('logout-button');
 logoutButton.addEventListener('click',async () => {
-    await fetch('/User/Logout', {
+    await fetch('http://localhost:5134/User/Logout', {
         method: 'GET',
     })
     .catch(error => console.error('Error:', error));

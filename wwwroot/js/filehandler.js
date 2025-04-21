@@ -1,6 +1,6 @@
 import { appendImageElement } from "./dom.js";
 let download = (filename) => {
-    fetch(`/File/DownloadFile/${filename}`)
+    fetch(`http://localhost:5134/File/DownloadFile/${filename}`)
     .then(response => response.blob())
     .then(blob => {
         const url = window.URL.createObjectURL(blob);
@@ -53,7 +53,7 @@ async function clearGallery() {
 
 async function refreshGallery() {
     await clearGallery();
-    await fetch('/File/GetFiles')
+    await fetch('http://localhost:5134/File/GetFiles')
     .then(response => response.json())
     .then(data => {
         data.map(item => {

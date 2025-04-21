@@ -23,7 +23,7 @@ namespace PullAt.Controllers
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             try{
-                var path = Path.Join(_pathService.GetUserFolderPath,file.FileName);
+                var path = _pathService.CreateFilePath(_pathService.GetUserFolderPath,file.FileName);
                 var result = await _fileService.UploadFileAsync(file,path);
                 return result.IsSuccess ? Ok("File uploaded successfully") : BadRequest(result.Message);
             }

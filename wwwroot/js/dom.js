@@ -84,23 +84,6 @@ let displayImage = (event) => {
     setOverlayImage(imagePath,imageName);
 };
 
-const selectButton = document.querySelector(".select-button");
-
-let selectionModeToggle = (selectionData) => {
-    if(selectionData.mode){
-        selectionData.images = [];
-        selectButton.style.backgroundColor = "rgba(249, 249, 249, 0.3)";
-        const elements = document.querySelectorAll(`.selected-indicator`);
-        elements.forEach(element => {
-            element.parentNode.removeChild(element);
-        });
-    }
-    else{
-        selectButton.style.backgroundColor = "rgba(249, 249, 249, 1)";
-    }
-    selectionData.mode = !selectionData.mode;
-};
-
 let toggleArrayItem = (array, value) => {
     const index = array.indexOf(value);
     if (index !== -1) {
@@ -111,4 +94,4 @@ let toggleArrayItem = (array, value) => {
     return array;
 }
 
-export { toggleMenu, displayImage, selectionModeToggle, appendImageElement , mouseOverImage , mouseOutImage , selectImage};
+export { toggleMenu, displayImage, appendImageElement , mouseOverImage , mouseOutImage , selectImage};
