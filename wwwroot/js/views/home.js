@@ -1,11 +1,11 @@
 const logoutButton = document.getElementById('logout-button');
 logoutButton.addEventListener('click',async () => {
-    await fetch('http://localhost:5134/User/Logout', {
+    await fetch('/User/Logout', {
         method: 'GET',
     })
     .catch(error => console.error('Error:', error));
     window.location.href = '/User/Login'
-});
+}); 
 
 const filesButton = document.getElementById('files-button');
 filesButton.addEventListener('click',() => {

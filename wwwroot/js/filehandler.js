@@ -1,6 +1,6 @@
 import { appendImageElement } from "./dom.js";
 let download = (filename) => {
-    fetch(`http://localhost:5134/File/DownloadFile/${filename}`)
+    fetch(`/File/DownloadFile/${filename}`)
     .then(response => response.blob())
     .then(blob => {
         const url = window.URL.createObjectURL(blob);
@@ -37,7 +37,7 @@ function uploadFile(file, endpoint, callback) {
         callback(new Error("Upload failed due to a network error"));
     };
 
-    xhr.timeout = 5000;
+    xhr.timeout = 50000;
     xhr.ontimeout = function () {
         callback(new Error("Upload timed out"));
     };
@@ -53,7 +53,7 @@ async function clearGallery() {
 
 async function refreshGallery() {
     await clearGallery();
-    await fetch('http://localhost:5134/File/GetFiles')
+    await fetch('/File/GetFiles')
     .then(response => response.json())
     .then(data => {
         data.map(item => {

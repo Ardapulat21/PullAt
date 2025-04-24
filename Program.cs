@@ -4,6 +4,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using PullAt.Interfaces;
 using PullAt.Services;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -68,10 +69,31 @@ builder.Services.AddAuthentication(options =>
 }   
 );
 
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(5134);
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 builder.Services.AddAuthorization();
+
+builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"/var/arda/.aspnet/keys"))
+                .SetApplicationName("Pullat")
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(30));
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 var usersPath = Path.Combine(Directory.GetCurrentDirectory(), "Users");
@@ -102,6 +124,9 @@ app.Use(async (context, next) =>
         context.Response.Redirect("/User/Login");
     }
 });
+
+app.UseCors("AllowAll");
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute(

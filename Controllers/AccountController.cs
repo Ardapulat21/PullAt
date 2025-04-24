@@ -16,13 +16,12 @@ namespace PullAt.Controllers
             _pathService = pathService;
             }
         public async Task<IActionResult> Account(){
-            var absolutePath = _pathService.GetProfilePhotoPath;
-            
-            var relativePath = String.IsNullOrEmpty(absolutePath) ?
+            var absoluteProfilePhotoPath = _pathService.GetProfilePhotoPath;
+            var relativeProfilePhotoPath = String.IsNullOrEmpty(absoluteProfilePhotoPath) ?
                                 "/Assets/Profile_photo.jpg" : 
-                                absolutePath.Substring(absolutePath.LastIndexOf("/Users/"));
+                                absoluteProfilePhotoPath.Substring(absoluteProfilePhotoPath.LastIndexOf("/Users/"));
                                 
-            ViewBag.RelativePath = relativePath;
+            ViewBag.RelativePath = relativeProfilePhotoPath;
             return View();
         }
         [HttpPost]

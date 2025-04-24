@@ -15,7 +15,7 @@ const fileInput = document.getElementById("fileInput");
 fileInput.addEventListener("change",(event) => {
     const file = event.target.files[0];
 
-    uploadFile(file, 'http://localhost:5134/File/UploadFile/', (err, result) => {
+    uploadFile(file, '/File/UploadFile', (err, result) => {
         if (err) {
             console.error("Upload error:", err.message);
         } else {
@@ -84,7 +84,7 @@ const deleteButton = document.getElementById('deleteButton');
 deleteButton.addEventListener('click',async () => {
     try{
         await Promise.all(selectionData.images.map(async (image) => {
-            await fetch(`http://localhost:5134/File/DeleteFileAsync/${image}`);
+            await fetch(`/File/DeleteFileAsync/${image}`);
         }));
         await refreshGallery();
         selectionData.images = [];
