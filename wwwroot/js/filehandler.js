@@ -15,7 +15,7 @@ let download = (filename) => {
     .catch(err => console.error('Error downloading file:', err));
 };
 
-function uploadFile(file, endpoint, callback) {
+let uploadFile = (file, endpoint, callback) => {
     const xhr = new XMLHttpRequest();
     const formData = new FormData();
     formData.append("file", file);
@@ -47,12 +47,9 @@ function uploadFile(file, endpoint, callback) {
 }
 
 const fileGrid = document.querySelector(".file-grid");
-async function clearGallery() {
-    fileGrid.innerHTML = ""; 
-}
 
-async function refreshGallery() {
-    await clearGallery();
+let refreshGallery = async () => {
+    fileGrid.innerHTML = ""; 
     await fetch('/File/GetFiles')
     .then(response => response.json())
     .then(data => {

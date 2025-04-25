@@ -84,7 +84,9 @@ const deleteButton = document.getElementById('deleteButton');
 deleteButton.addEventListener('click',async () => {
     try{
         await Promise.all(selectionData.images.map(async (image) => {
-            await fetch(`/File/DeleteFileAsync/${image}`);
+            await fetch(`/File/DeleteFileAsync/${image}`,{
+                method: 'DELETE'
+            });
         }));
         await refreshGallery();
         selectionData.images = [];

@@ -125,8 +125,6 @@ app.Use(async (context, next) =>
     }
 });
 
-app.UseCors("AllowAll");
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute(

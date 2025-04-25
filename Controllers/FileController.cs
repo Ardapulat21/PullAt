@@ -64,7 +64,7 @@ namespace PullAt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("DeleteFileAsync/{filename}")]
+        [HttpDelete("DeleteFileAsync/{filename}")]
         public async Task<IActionResult> DeleteFileAsync(string filename){
             try{
                 if(String.IsNullOrEmpty(filename))
