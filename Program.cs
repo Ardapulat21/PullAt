@@ -74,26 +74,8 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     serverOptions.ListenAnyIP(5134);
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
 builder.Services.AddAuthorization();
-
-builder.Services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(@"/var/arda/.aspnet/keys"))
-                .SetApplicationName("Pullat")
-                .SetDefaultKeyLifetime(TimeSpan.FromDays(30));
-
 var app = builder.Build();
-
-app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 var usersPath = Path.Combine(Directory.GetCurrentDirectory(), "Users");
