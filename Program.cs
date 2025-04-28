@@ -26,6 +26,11 @@ builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.Name = ".Pullat.Session"; 
+    options.Cookie.Path = "/var/arda/PullAt";
+    options.IdleTimeout = TimeSpan.FromHours(1);
 });
 
 builder.Services.AddAuthentication(options =>
@@ -74,8 +79,24 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     serverOptions.ListenAnyIP(5134);
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5134") 
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"/var/arda/PullAt/keys"))
+    .SetApplicationName("PullAt");
+
 builder.Services.AddAuthorization();
 var app = builder.Build();
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 var usersPath = Path.Combine(Directory.GetCurrentDirectory(), "Users");
