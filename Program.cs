@@ -4,6 +4,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using PullAt.Interfaces;
 using PullAt.Services;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -25,6 +26,11 @@ builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.Name = ".Pullat.Session"; 
+    options.Cookie.Path = "/var/arda/PullAt";
+    options.IdleTimeout = TimeSpan.FromHours(1);
 });
 
 builder.Services.AddAuthentication(options =>
@@ -68,26 +74,44 @@ builder.Services.AddAuthentication(options =>
 }   
 );
 
-builder.Services.AddAuthorization();
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(5134);
+});
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5134") 
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"/var/arda/PullAt/keys"))
+    .SetApplicationName("PullAt");
+
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
-app.UseStaticFiles();
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+app.UseCors();
 
 app.UseHttpsRedirection();
 var usersPath = Path.Combine(Directory.GetCurrentDirectory(), "Users");
+app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(usersPath),
     RequestPath = "/users"
 });
 
-
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
 app.UseRouting();
 
@@ -103,6 +127,7 @@ app.Use(async (context, next) =>
         context.Response.Redirect("/User/Login");
     }
 });
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute(
@@ -110,4 +135,3 @@ app.MapControllerRoute(
     pattern: "{controller=User}/{action=Login}/{id?}");
 
 app.Run("http://0.0.0.0:5134"); 
-// app.Run();

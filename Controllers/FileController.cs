@@ -23,7 +23,7 @@ namespace PullAt.Controllers
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             try{
-                var path = Path.Join(_pathService.GetUserFolderPath,file.FileName);
+                var path = _pathService.CreateFilePath(_pathService.GetUserFolderPath,file.FileName);
                 var result = await _fileService.UploadFileAsync(file,path);
                 return result.IsSuccess ? Ok("File uploaded successfully") : BadRequest(result.Message);
             }
@@ -64,7 +64,7 @@ namespace PullAt.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("DeleteFileAsync/{filename}")]
+        [HttpDelete("DeleteFileAsync/{filename}")]
         public async Task<IActionResult> DeleteFileAsync(string filename){
             try{
                 if(String.IsNullOrEmpty(filename))

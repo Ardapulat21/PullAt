@@ -31,9 +31,10 @@ namespace PullAt.Services{
                 return String.Empty;
             } 
         }
-        public string CreateFilePath(string directoryPath,string fileName,string extension){
+        public string CreateFilePath(string directoryPath,string fileName){
             var filePath = Path.Combine(directoryPath,fileName);
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            var extension = Path.GetExtension(fileName);
             int suffix = 1;
             while (File.Exists(filePath))
             {

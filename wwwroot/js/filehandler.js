@@ -15,31 +15,41 @@ let download = (filename) => {
     .catch(err => console.error('Error downloading file:', err));
 };
 
-let uploadFile = async (event,endpoint,callback = null) => {
-    const file = event.target.files[0];
-    if(!file) return;
-
+let uploadFile = (file, endpoint, callback) => {
+    const xhr = new XMLHttpRequest();
     const formData = new FormData();
     formData.append("file", file);
-    await fetch(
-        endpoint,
-        {
-            method: 'POST', 
-            body: formData
-        })
-        .then(response => response.json())
-        .then(callback);
 
-    event.target.value = '';
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+                const response = JSON.parse(xhr.responseText);
+                callback(null, response); // success
+            } catch (e) {
+                callback(null, xhr.responseText); // fallback to raw text
+            }
+        } else {
+            callback(new Error("Upload failed with status: " + xhr.status));
+        }
+    };
+
+    xhr.onerror = function () {
+        callback(new Error("Upload failed due to a network error"));
+    };
+
+    xhr.timeout = 50000;
+    xhr.ontimeout = function () {
+        callback(new Error("Upload timed out"));
+    };
+
+    xhr.open("POST", endpoint);
+    xhr.send(formData);
 }
 
 const fileGrid = document.querySelector(".file-grid");
-async function clearGallery() {
-    fileGrid.innerHTML = ""; 
-}
 
-async function refreshGallery() {
-    await clearGallery();
+let refreshGallery = async () => {
+    fileGrid.innerHTML = ""; 
     await fetch('/File/GetFiles')
     .then(response => response.json())
     .then(data => {

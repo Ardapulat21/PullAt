@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/files.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/PullAt.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,7 +48,7 @@
                         <p class="home-menu-content">Logout</p>
                     </div>
                 </div>
-                <script src="~/js/views/home.js" type="module" asp-append-version="true" async></script>
+                <script src="/js/views/home.js" type="module" asp-append-version="true" async></script>
             }
             </div>
             
@@ -66,8 +65,8 @@
     
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/dom.js" type="module" asp-append-version="true" async></script>
+    <script src="/js/site.js" asp-append-version="true"></script>
+    <script src="/js/dom.js" type="module" asp-append-version="true" async></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
