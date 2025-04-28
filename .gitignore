@@ -4,3 +4,7 @@ obj/
 *.log
 *.txt
 wwwroot/lib
+Users/
+*.png
+*.jpg
+*.jpeg
