@@ -10,7 +10,7 @@ namespace PullAt.Controllers
     public class UserController : Controller 
     {
         IUserService _userService;
-        public UserController(IUserService userService,HttpClient httpClient) 
+        public UserController(IUserService userService) 
         {
             _userService = userService;
         }

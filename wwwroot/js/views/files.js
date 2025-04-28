@@ -1,4 +1,4 @@
-import { toggleMenu, displayImage, selectImage, selectionModeToggle } from "../dom.js";
+import { toggleMenu, displayImage , mouseOverImage , mouseOutImage , selectImage} from "../dom.js";
 import { download, refreshGallery, uploadFile} from "../filehandler.js";
 
 const selectionData = {
@@ -6,12 +6,23 @@ const selectionData = {
     mode: false,
     images: [],
 };
+
 var button = document.getElementById("file-menu-button");
 button.addEventListener("click",toggleMenu);
 
 const fileInput = document.getElementById("fileInput");
+
 fileInput.addEventListener("change",(event) => {
-    uploadFile(event,'/File/UploadFile',refreshGallery)
+    const file = event.target.files[0];
+
+    uploadFile(file, '/File/UploadFile', (err, result) => {
+        if (err) {
+            console.error("Upload error:", err.message);
+        } else {
+            console.log("Upload successful:", result);
+            refreshGallery(); 
+        }
+    });
 });
 
 const uploadButton = document.getElementById("uploadButton");
@@ -20,25 +31,32 @@ uploadButton.addEventListener("click", () => {
 });
 
 const fileGrid = document.querySelector('.file-grid');
-fileGrid.addEventListener('click',(event) => {
-    displayImage(event,selectionData);
-});
 
 fileGrid.addEventListener('click',(event) => {
-    selectImage(event,selectionData);
+    if (event.target.classList.contains('gallery-item')) {
+        displayImage(event);
+    }
 });
+
+fileGrid.addEventListener('mouseover',(event) => {
+    if (event.target.classList.contains('gallery-item')) {
+        mouseOverImage(event);
+    }
+});
+
+fileGrid.addEventListener('mouseout',(event) => {
+    if (event.target.classList.contains('file-item')) {
+        mouseOutImage(event);
+    }
+});
+
+document.querySelector('.gallery').addEventListener('click', (event) => {selectImage(event,selectionData)});
 
 const overlayContainer = document.querySelector('.overlay-container');
 
 const imageContainer = document.getElementById('imageContainer');
 imageContainer.addEventListener('click',() => {
     overlayContainer.style.display = 'none';
-});
-
-const selectButton = document.querySelector(".select-button");
-selectButton.addEventListener('click',(event) => {
-    selectionModeToggle(selectionData);
-
 });
 
 const downloadButton = document.getElementById('downloadButton');
@@ -66,7 +84,9 @@ const deleteButton = document.getElementById('deleteButton');
 deleteButton.addEventListener('click',async () => {
     try{
         await Promise.all(selectionData.images.map(async (image) => {
-            await fetch(`DeleteFileAsync/${image}`);
+            await fetch(`/File/DeleteFileAsync/${image}`,{
+                method: 'DELETE'
+            });
         }));
         await refreshGallery();
         selectionData.images = [];
@@ -78,12 +98,4 @@ deleteButton.addEventListener('click',async () => {
 const refreshButton = document.getElementById('refreshButton');
 refreshButton.addEventListener('click',() =>{
     refreshGallery();
-});
-
-
-const homeMenu = document.getElementById('home-menu')
-const menuButton = document.getElementById('home-menu-button');
-menuButton.addEventListener('click',() => {
-    console.log('hey');
-    homeMenu.style.width = '0px';
 });

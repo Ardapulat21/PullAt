@@ -5,7 +5,7 @@ logoutButton.addEventListener('click',async () => {
     })
     .catch(error => console.error('Error:', error));
     window.location.href = '/User/Login'
-});
+}); 
 
 const filesButton = document.getElementById('files-button');
 filesButton.addEventListener('click',() => {

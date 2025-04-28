@@ -4,6 +4,6 @@ namespace PullAt.Interfaces {
         public string GetUserFolderPath { get; }
         public string GetProfilePhotoPath { get;}
         public string GetRootPath { get; }
-        public string CreateFilePath(string directoryPath,string fileName,string extension);
+        public string CreateFilePath(string directoryPath,string fileName);
     }
 }
