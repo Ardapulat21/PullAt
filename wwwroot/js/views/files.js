@@ -11,10 +11,8 @@ var button = document.getElementById("file-menu-button");
 button.addEventListener("click",toggleMenu);
 
 const fileInput = document.getElementById("fileInput");
-
 fileInput.addEventListener("change",(event) => {
     const file = event.target.files[0];
-
     uploadFile(file, '/File/UploadFile', (err, result) => {
         if (err) {
             console.error("Upload error:", err.message);
