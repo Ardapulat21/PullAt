@@ -2,12 +2,14 @@ import { uploadFile} from "../filehandler.js";
 
 const input = document.getElementById('imageInput');
 input.addEventListener('change',(event) => {
-    uploadFile(event,'/Account/ChangeProfilePhoto',
-        (data) => {
-            if (data.success) {
-                document.getElementById('profile-picture').src = data.relativePath + "?t=" + new Date().getTime();
+    const file = event.target.files[0];
+    uploadFile(file,'/Account/ChangeProfilePhoto',
+        (err, result) => {
+            if (err) {
+                console.error("Upload error:", err.message);
             } else {
-                console.log("Error updating profile photo.");
+                document.getElementById('profile-picture').src = result.relativePath + "?t=" + new Date().getTime();
+                console.log("Upload successful:", result);
             }
         }
 );
